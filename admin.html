@@ -1,0 +1,529 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin — Devverse</title>
+  <link rel="icon" type="image/png" href="assets/favicon.png">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"/>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+<!-- ══ LOGIN ══ -->
+<div id="loginScreen" class="admin-login-wrap">
+  <div class="admin-login-card">
+    <div class="text-center mb-4">
+      <img src="assets/logo.png" alt="Devverse" style="height:38px" class="mb-3"><br>
+      <h4 style="font-weight:800">Admin Login</h4>
+      <p class="text-muted small mb-0">Devverse Management Panel</p>
+    </div>
+    <div id="loginError" class="alert alert-danger py-2 small mb-3" style="display:none"></div>
+
+    <!-- Google -->
+    <button id="googleBtn" onclick="doGoogleLogin()" class="w-100 d-flex align-items-center justify-content-center gap-2 mb-3"
+      style="border:1.5px solid var(--border);border-radius:10px;background:white;padding:11px 16px;font-family:Poppins,sans-serif;font-size:14px;font-weight:500;cursor:pointer;transition:all 0.2s;color:var(--text)">
+      <svg width="18" height="18" viewBox="0 0 48 48"><path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"/><path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"/><path fill="#FBBC05" d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z"/><path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.18 1.48-4.97 2.35-8.16 2.35-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"/></svg>
+      Continue with Google
+    </button>
+
+    <div class="d-flex align-items-center gap-2 mb-3">
+      <hr class="flex-grow-1 m-0" style="border-color:var(--border)">
+      <span class="text-muted" style="font-size:12px">or</span>
+      <hr class="flex-grow-1 m-0" style="border-color:var(--border)">
+    </div>
+
+    <input type="email" id="loginEmail" class="input-admin mb-3" placeholder="Admin email">
+    <input type="password" id="loginPassword" class="input-admin mb-3" placeholder="Password" onkeydown="if(event.key==='Enter')doLogin()">
+    <button class="btn-purple w-100" id="loginBtn" onclick="doLogin()"><i class="fas fa-sign-in-alt me-2"></i>Sign In</button>
+    <p class="text-center text-muted mt-4 mb-0" style="font-size:12px">Only authorised Devverse admins can access this panel.</p>
+  </div>
+</div>
+
+<!-- ══ DASHBOARD ══ -->
+<div id="adminApp" style="display:none">
+  <div class="admin-sidebar">
+    <div class="brand d-flex align-items-center gap-2">
+      <img src="assets/logo.png" alt="Devverse" style="height:28px;filter:brightness(0) invert(1)">
+      <span style="color:rgba(255,255,255,0.5);font-size:11px">Admin Panel</span>
+    </div>
+    <nav class="p-2 mt-2">
+      <a href="admin.html" class="nav-link active" onclick="showTab('dashboard',this)"><i class="fas fa-tachometer-alt"></i>Dashboard</a>
+      <a href="admin.html" class="nav-link" onclick="showTab('certificates',this)"><i class="fas fa-certificate"></i>Certificates</a>
+      <a href="admin.html" class="nav-link" onclick="showTab('courses',this)"><i class="fas fa-graduation-cap"></i>Courses</a>
+      <a href="admin.html" class="nav-link" onclick="showTab('internships',this)"><i class="fas fa-briefcase"></i>Internships</a>
+      <a href="admin.html" class="nav-link" onclick="showTab('services',this)"><i class="fas fa-code"></i>IT Services</a>
+      <hr style="border-color:rgba(255,255,255,0.08);margin:8px">
+      <div style="padding:6px 10px;font-size:10px;font-weight:700;color:rgba(255,255,255,0.3);letter-spacing:0.1em;text-transform:uppercase">Applications</div>
+      <a href="admin-course-applications.html" class="nav-link"><i class="fas fa-file-alt"></i>Course Applications <span id="caBadge" class="badge bg-danger ms-1" style="display:none"></span></a>
+      <a href="admin-intern-applications.html" class="nav-link"><i class="fas fa-user-plus"></i>Internship Applications <span id="iaBadge" class="badge bg-danger ms-1" style="display:none"></span></a>
+      <a href="admin-service-requests.html" class="nav-link"><i class="fas fa-inbox"></i>Service Requests <span id="srBadge" class="badge bg-danger ms-1" style="display:none"></span></a>
+      <hr style="border-color:rgba(255,255,255,0.08);margin:8px">
+      <a href="index.html" class="nav-link" target="_blank"><i class="fas fa-external-link-alt"></i>View Site</a>
+      <a href="#" class="nav-link" style="color:#f87171!important" onclick="doLogout()"><i class="fas fa-sign-out-alt"></i>Logout</a>
+    </nav>
+  </div>
+
+  <div class="admin-main">
+
+    <!-- DASHBOARD -->
+    <div id="tab-dashboard" class="tab-content-section active">
+      <h4 style="font-weight:800;margin-bottom:24px">Dashboard Overview</h4>
+      <div class="row g-4 mb-4">
+        <div class="col-md-3 col-6"><div class="admin-stat" style="cursor:pointer" onclick="showTab('certificates',null)"><div class="text-muted small mb-1">Certificates</div><h3 id="sCerts" class="text-gradient" style="font-weight:800">—</h3></div></div>
+        <div class="col-md-3 col-6"><div class="admin-stat" style="cursor:pointer" onclick="showTab('courses',null)"><div class="text-muted small mb-1">Courses</div><h3 id="sCourses" class="text-gradient" style="font-weight:800">—</h3></div></div>
+        <div class="col-md-3 col-6"><a href="admin-course-applications.html" style="text-decoration:none"><div class="admin-stat" style="cursor:pointer"><div class="text-muted small mb-1">Course Applications</div><h3 id="sCourseApps" style="font-weight:800;color:#f59e0b">—</h3></div></a></div>
+        <div class="col-md-3 col-6"><a href="admin-intern-applications.html" style="text-decoration:none"><div class="admin-stat" style="cursor:pointer"><div class="text-muted small mb-1">Intern Applications</div><h3 id="sInternApps" style="font-weight:800;color:#f59e0b">—</h3></div></a></div>
+        <div class="col-md-3 col-6"><a href="admin-service-requests.html" style="text-decoration:none"><div class="admin-stat" style="cursor:pointer"><div class="text-muted small mb-1">Service Requests</div><h3 id="sRequests" style="font-weight:800;color:#ef4444">—</h3></div></a></div>
+        <div class="col-md-3 col-6"><div class="admin-stat" style="cursor:pointer" onclick="showTab('services',null)"><div class="text-muted small mb-1">IT Services</div><h3 id="sServices" class="text-gradient" style="font-weight:800">—</h3></div></div>
+      </div>
+      <div class="admin-card">
+        <h6 style="font-weight:700;margin-bottom:16px">Quick Actions</h6>
+        <div class="d-flex gap-2 flex-wrap">
+          <button class="btn-purple" style="font-size:13px;padding:8px 18px" onclick="showTab('certificates',null);setTimeout(()=>document.getElementById('addCertBtn').click(),200)"><i class="fas fa-plus me-1"></i>Add Certificate</button>
+          <button class="btn-purple" style="font-size:13px;padding:8px 18px" onclick="showTab('courses',null);setTimeout(()=>openCourseModal(),200)"><i class="fas fa-plus me-1"></i>Add Course</button>
+          <a href="admin-course-applications.html" class="btn-purple" style="font-size:13px;padding:8px 18px;text-decoration:none"><i class="fas fa-file-alt me-1"></i>Course Applications</a>
+          <a href="admin-intern-applications.html" class="btn-purple" style="font-size:13px;padding:8px 18px;text-decoration:none"><i class="fas fa-user-plus me-1"></i>Internship Applications</a>
+          <a href="admin-service-requests.html" class="btn-purple" style="font-size:13px;padding:8px 18px;text-decoration:none"><i class="fas fa-inbox me-1"></i>Service Requests</a>
+        </div>
+      </div>
+      <div class="admin-card">
+        <h6 style="font-weight:700;margin-bottom:8px">📧 Email Notifications</h6>
+        <p class="text-muted small mb-0">Every time someone submits a <strong>course application</strong>, <strong>internship application</strong> or <strong>service request</strong>, it is saved to Firebase in real-time. To receive email alerts, set up a <a href="https://firebase.google.com/docs/functions" target="_blank" class="text-purple">Firebase Cloud Function</a> that triggers on Firestore write and sends an email via SendGrid/Nodemailer, or use <a href="https://zapier.com" target="_blank" class="text-purple">Zapier (Firestore → Gmail)</a> for a no-code solution.</p>
+      </div>
+    </div>
+
+    <!-- CERTIFICATES -->
+    <div id="tab-certificates" class="tab-content-section">
+      <div class="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-3">
+        <h4 style="font-weight:800;margin:0">Certificates</h4>
+        <button class="btn-purple" style="font-size:13px;padding:8px 18px" id="addCertBtn" onclick="openCertModal()"><i class="fas fa-plus me-2"></i>Add Certificate</button>
+      </div>
+      <div class="admin-card">
+        <input type="text" class="input-admin mb-3" id="certSearch" placeholder="Search by name, ID or email…" oninput="filterCerts()">
+        <div class="table-responsive"><table class="table-admin"><thead><tr><th>Certificate ID</th><th>Name</th><th>College</th><th>Email</th><th>Actions</th></tr></thead><tbody id="certsBody"><tr><td colspan="5" class="text-center py-4"><div class="spinner-border spinner-border-sm" style="color:var(--purple)"></div></td></tr></tbody></table></div>
+      </div>
+    </div>
+
+    <!-- COURSES -->
+    <div id="tab-courses" class="tab-content-section">
+      <div class="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-3">
+        <h4 style="font-weight:800;margin:0">Courses</h4>
+        <button class="btn-purple" style="font-size:13px;padding:8px 18px" onclick="openCourseModal()"><i class="fas fa-plus me-2"></i>Add Course</button>
+      </div>
+      <div class="admin-card">
+        <div class="table-responsive"><table class="table-admin"><thead><tr><th>Title</th><th>Category</th><th>Level</th><th>Duration</th><th>Price</th><th>Featured</th><th>Actions</th></tr></thead><tbody id="coursesBody"><tr><td colspan="7" class="text-center py-4"><div class="spinner-border spinner-border-sm" style="color:var(--purple)"></div></td></tr></tbody></table></div>
+      </div>
+    </div>
+
+    <!-- INTERNSHIPS -->
+    <div id="tab-internships" class="tab-content-section">
+      <div class="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-3">
+        <h4 style="font-weight:800;margin:0">Internship Programs</h4>
+        <button class="btn-purple" style="font-size:13px;padding:8px 18px" onclick="openInternModal()"><i class="fas fa-plus me-2"></i>Add Internship</button>
+      </div>
+      <div class="admin-card">
+        <div class="table-responsive"><table class="table-admin"><thead><tr><th>Title</th><th>Duration</th><th>Mode</th><th>Level</th><th>Actions</th></tr></thead><tbody id="internsBody"><tr><td colspan="5" class="text-center py-4"><div class="spinner-border spinner-border-sm" style="color:var(--purple)"></div></td></tr></tbody></table></div>
+      </div>
+    </div>
+
+    <!-- IT SERVICES -->
+    <div id="tab-services" class="tab-content-section">
+      <div class="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-3">
+        <h4 style="font-weight:800;margin:0">IT Services</h4>
+        <button class="btn-purple" style="font-size:13px;padding:8px 18px" onclick="openSvcModal()"><i class="fas fa-plus me-2"></i>Add Service</button>
+      </div>
+      <div class="admin-card">
+        <div class="table-responsive"><table class="table-admin"><thead><tr><th>Title</th><th>Badge</th><th>Tags</th><th>Actions</th></tr></thead><tbody id="svcBody"><tr><td colspan="4" class="text-center py-4"><div class="spinner-border spinner-border-sm" style="color:var(--purple)"></div></td></tr></tbody></table></div>
+      </div>
+    </div>
+
+    <!-- COURSE APPLICATIONS → separate page -->
+    <!-- INTERNSHIP APPLICATIONS → separate page -->
+    <!-- SERVICE REQUESTS → separate page -->
+
+  </div><!-- /admin-main -->
+</div><!-- /adminApp -->
+
+<!-- ══ MODALS ══ -->
+
+<!-- Certificate Modal -->
+<div class="modal fade" id="certModal" tabindex="-1">
+  <div class="modal-dialog"><div class="modal-content" style="border-radius:16px;border:none">
+    <div class="modal-header border-0 pb-0"><h5 class="modal-title fw-800" id="certModalTitle" style="font-weight:800">Add Certificate</h5><button type="button" class="btn-close" data-bs-dismiss="modal"></button></div>
+    <div class="modal-body">
+      <input type="hidden" id="certDocId">
+      <label class="form-label-admin">Certificate ID * <small class="text-muted">(12 chars, starts with DEVS)</small></label>
+      <input type="text" class="input-admin mb-3" id="certIdF" placeholder="DEVS12345678" style="text-transform:uppercase;letter-spacing:0.08em">
+      <label class="form-label-admin">Full Name *</label>
+      <input type="text" class="input-admin mb-3" id="certNameF" placeholder="e.g. Kushal LK - Course & Internship">
+      <label class="form-label-admin">College / Institution *</label>
+      <input type="text" class="input-admin mb-3" id="certCollegeF" placeholder="College name">
+      <label class="form-label-admin">Email *</label>
+      <input type="email" class="input-admin" id="certEmailF" placeholder="student@email.com">
+    </div>
+    <div class="modal-footer border-0">
+      <button class="btn-outline-purple btn-sm" data-bs-dismiss="modal" style="padding:8px 18px">Cancel</button>
+      <button class="btn-purple" style="padding:8px 20px;font-size:13px" onclick="saveCertificate()">Save Certificate</button>
+    </div>
+  </div></div>
+</div>
+
+<!-- Course Modal -->
+<div class="modal fade" id="courseModal" tabindex="-1">
+  <div class="modal-dialog modal-lg"><div class="modal-content" style="border-radius:16px;border:none">
+    <div class="modal-header border-0 pb-0"><h5 class="modal-title fw-800" style="font-weight:800">Add / Edit Course</h5><button type="button" class="btn-close" data-bs-dismiss="modal"></button></div>
+    <div class="modal-body">
+      <input type="hidden" id="courseDocId">
+      <div class="row g-3">
+        <div class="col-md-8"><label class="form-label-admin">Course Title *</label><input type="text" class="input-admin" id="cTitle" placeholder="e.g. Full Stack Development"></div>
+        <div class="col-md-4"><label class="form-label-admin">Category</label><select class="input-admin" id="cCategory"><option>Development</option><option>Marketing</option><option>Design</option><option>Data</option><option>Other</option></select></div>
+        <div class="col-md-4"><label class="form-label-admin">Level</label><select class="input-admin" id="cLevel"><option>Beginner</option><option>Intermediate</option><option>Advanced</option></select></div>
+        <div class="col-md-4"><label class="form-label-admin">Duration</label><input type="text" class="input-admin" id="cDuration" placeholder="e.g. 8 Weeks"></div>
+        <div class="col-md-4"><label class="form-label-admin">Price (₹)</label><input type="text" class="input-admin" id="cPrice" placeholder="e.g. 4999 or leave blank"></div>
+        <div class="col-md-6"><label class="form-label-admin">Icon (Font Awesome class)</label><input type="text" class="input-admin" id="cIcon" placeholder="fas fa-code"></div>
+        <div class="col-md-6"><label class="form-label-admin">Gradient Color</label><input type="text" class="input-admin" id="cColor" placeholder="linear-gradient(135deg,#7A28CB,#9933FF)"></div>
+        <div class="col-12"><label class="form-label-admin">Description *</label><textarea class="input-admin" id="cDesc" rows="3" placeholder="Short course description…" style="min-height:80px"></textarea></div>
+        <div class="col-12"><label class="form-label-admin">Key Highlights (one per line)</label><textarea class="input-admin" id="cHighlights" rows="4" placeholder="React.js&#10;Node.js&#10;Firebase&#10;Deployment" style="min-height:90px"></textarea></div>
+        <div class="col-md-6"><label class="form-label-admin">Apply / Enrol Link</label><input type="text" class="input-admin" id="cApplyLink" placeholder="https://wa.me/919150059199"></div>
+        <div class="col-md-3"><label class="form-label-admin">Sort Order</label><input type="number" class="input-admin" id="cOrder" placeholder="1"></div>
+        <div class="col-md-3 d-flex align-items-end pb-1"><label class="d-flex align-items-center gap-2" style="cursor:pointer"><input type="checkbox" id="cFeatured"> Show on Homepage</label></div>
+      </div>
+    </div>
+    <div class="modal-footer border-0">
+      <button class="btn-outline-purple" data-bs-dismiss="modal" style="padding:8px 18px;font-size:13px">Cancel</button>
+      <button class="btn-purple" style="padding:8px 20px;font-size:13px" onclick="saveCourse()">Save Course</button>
+    </div>
+  </div></div>
+</div>
+
+<!-- Internship Modal -->
+<div class="modal fade" id="internModal" tabindex="-1">
+  <div class="modal-dialog modal-lg"><div class="modal-content" style="border-radius:16px;border:none">
+    <div class="modal-header border-0 pb-0"><h5 class="modal-title fw-800" style="font-weight:800">Add / Edit Internship</h5><button type="button" class="btn-close" data-bs-dismiss="modal"></button></div>
+    <div class="modal-body">
+      <input type="hidden" id="internDocId">
+      <div class="row g-3">
+        <div class="col-md-8"><label class="form-label-admin">Title *</label><input type="text" class="input-admin" id="iTitle" placeholder="e.g. Full Stack Development"></div>
+        <div class="col-md-4"><label class="form-label-admin">Duration</label><input type="text" class="input-admin" id="iDuration" placeholder="1 Month"></div>
+        <div class="col-md-4"><label class="form-label-admin">Mode</label><select class="input-admin" id="iMode"><option>Remote</option><option>Hybrid</option><option>On-site</option></select></div>
+        <div class="col-md-4"><label class="form-label-admin">Level</label><select class="input-admin" id="iLevel"><option>Beginner</option><option>Intermediate</option><option>Advanced</option></select></div>
+        <div class="col-md-4"><label class="form-label-admin">Stipend</label><input type="text" class="input-admin" id="iStipend" placeholder="Unpaid / ₹2000/month"></div>
+        <div class="col-md-6"><label class="form-label-admin">Icon (Font Awesome)</label><input type="text" class="input-admin" id="iIcon" placeholder="fas fa-code"></div>
+        <div class="col-md-6"><label class="form-label-admin">Gradient Color</label><input type="text" class="input-admin" id="iColor" placeholder="linear-gradient(135deg,#7A28CB,#9933FF)"></div>
+        <div class="col-12"><label class="form-label-admin">Description</label><textarea class="input-admin" id="iDesc" rows="3" placeholder="Internship description…" style="min-height:80px"></textarea></div>
+        <div class="col-12"><label class="form-label-admin">Skills (one per line)</label><textarea class="input-admin" id="iSkills" rows="3" placeholder="React.js&#10;Node.js&#10;Firebase" style="min-height:80px"></textarea></div>
+        <div class="col-md-8"><label class="form-label-admin">Apply Link</label><input type="text" class="input-admin" id="iApplyLink" placeholder="https://wa.me/919150059199"></div>
+        <div class="col-md-4"><label class="form-label-admin">Sort Order</label><input type="number" class="input-admin" id="iOrder" placeholder="1"></div>
+      </div>
+    </div>
+    <div class="modal-footer border-0">
+      <button class="btn-outline-purple" data-bs-dismiss="modal" style="padding:8px 18px;font-size:13px">Cancel</button>
+      <button class="btn-purple" style="padding:8px 20px;font-size:13px" onclick="saveInternship()">Save Internship</button>
+    </div>
+  </div></div>
+</div>
+
+<!-- IT Service Modal -->
+<div class="modal fade" id="svcModal" tabindex="-1">
+  <div class="modal-dialog modal-lg"><div class="modal-content" style="border-radius:16px;border:none">
+    <div class="modal-header border-0 pb-0"><h5 class="modal-title fw-800" style="font-weight:800">Add / Edit IT Service</h5><button type="button" class="btn-close" data-bs-dismiss="modal"></button></div>
+    <div class="modal-body">
+      <input type="hidden" id="svcDocId">
+      <div class="row g-3">
+        <div class="col-md-8"><label class="form-label-admin">Service Title *</label><input type="text" class="input-admin" id="sTitle" placeholder="e.g. Website Development"></div>
+        <div class="col-md-4"><label class="form-label-admin">Badge (optional)</label><input type="text" class="input-admin" id="sBadge" placeholder="Most Popular / New"></div>
+        <div class="col-md-6"><label class="form-label-admin">Icon (Font Awesome)</label><input type="text" class="input-admin" id="sIcon" placeholder="fas fa-globe"></div>
+        <div class="col-md-6"><label class="form-label-admin">Accent Color</label><input type="text" class="input-admin" id="sColor" placeholder="#7A28CB"></div>
+        <div class="col-12"><label class="form-label-admin">Description</label><textarea class="input-admin" id="sDesc" rows="3" placeholder="What this service includes…" style="min-height:80px"></textarea></div>
+        <div class="col-12"><label class="form-label-admin">Tags (one per line)</label><textarea class="input-admin" id="sTags" rows="3" placeholder="HTML/CSS&#10;React&#10;Firebase" style="min-height:70px"></textarea></div>
+        <div class="col-md-8"><label class="form-label-admin">Deliverable</label><input type="text" class="input-admin" id="sDeliverable" placeholder="e.g. Responsive website + hosting setup"></div>
+        <div class="col-md-4"><label class="form-label-admin">Sort Order</label><input type="number" class="input-admin" id="sOrder" placeholder="1"></div>
+      </div>
+    </div>
+    <div class="modal-footer border-0">
+      <button class="btn-outline-purple" data-bs-dismiss="modal" style="padding:8px 18px;font-size:13px">Cancel</button>
+      <button class="btn-purple" style="padding:8px 20px;font-size:13px" onclick="saveSvc()">Save Service</button>
+    </div>
+  </div></div>
+</div>
+
+<div class="toast-msg" id="toastMsg"></div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<script type="module">
+import { db, auth } from './js/firebase-config.js';
+import { signInWithEmailAndPassword, signOut, onAuthStateChanged, GoogleAuthProvider, signInWithPopup } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js';
+import { collection, getDocs, addDoc, updateDoc, deleteDoc, doc, serverTimestamp } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js';
+
+const ALLOWED = 'vjysupermacy@gmail.com';
+
+// ── AUTH ──
+onAuthStateChanged(auth, user => {
+  if (user) {
+    if (user.email !== ALLOWED) { signOut(auth); showErr('Access denied.'); return; }
+    document.getElementById('loginScreen').style.display = 'none';
+    document.getElementById('adminApp').style.display = 'block';
+    loadDashboard();
+  } else {
+    document.getElementById('loginScreen').style.display = 'flex';
+    document.getElementById('adminApp').style.display = 'none';
+  }
+});
+
+function showErr(msg) { const el=document.getElementById('loginError'); el.style.display='block'; el.textContent=msg; }
+
+window.doGoogleLogin = async () => {
+  const btn = document.getElementById('googleBtn');
+  btn.disabled=true; btn.textContent='Connecting…';
+  try {
+    const r = await signInWithPopup(auth, new GoogleAuthProvider());
+    if (r.user.email !== ALLOWED) { await signOut(auth); showErr('Access denied. Only authorised admins.'); }
+  } catch(e) { showErr(e.code==='auth/popup-closed-by-user'?'Sign-in cancelled.':'Google sign-in failed.'); }
+  btn.disabled=false; btn.innerHTML='<svg width="18" height="18" viewBox="0 0 48 48"><path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"/><path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"/><path fill="#FBBC05" d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z"/><path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.18 1.48-4.97 2.35-8.16 2.35-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"/></svg> Continue with Google';
+};
+window.doLogin = async () => {
+  const btn=document.getElementById('loginBtn');
+  btn.textContent='Signing in…'; btn.disabled=true;
+  try { await signInWithEmailAndPassword(auth, document.getElementById('loginEmail').value, document.getElementById('loginPassword').value); }
+  catch(e) { const m={'auth/wrong-password':'Wrong password.','auth/user-not-found':'Email not found.','auth/invalid-email':'Invalid email.'}; showErr(m[e.code]||'Login failed.'); btn.textContent='Sign In'; btn.disabled=false; }
+};
+window.doLogout = () => signOut(auth);
+
+// ── TABS ──
+window.showTab = (tab, el) => {
+  document.querySelectorAll('.tab-content-section').forEach(s=>s.classList.remove('active'));
+  document.querySelectorAll('.admin-sidebar .nav-link').forEach(l=>l.classList.remove('active'));
+  document.getElementById('tab-'+tab).classList.add('active');
+  if(el) el.classList.add('active');
+  ({certificates:loadCerts,courses:loadCourses,internships:loadInterns,services:loadSvcs,courseApps:loadCourseApps,internApps:loadInternApps,requests:loadRequests})[tab]?.();
+};
+
+// ── TOAST ──
+function toast(msg, ok=true) {
+  const t=document.getElementById('toastMsg'); t.textContent=msg;
+  t.style.background=ok?'var(--purple-dark)':'#991b1b';
+  t.classList.add('show'); setTimeout(()=>t.classList.remove('show'),3000);
+}
+
+// ── DASHBOARD ──
+async function loadDashboard() {
+  const [c,co,ca,ia,sr,sv] = await Promise.all([
+    getDocs(collection(db,'certificates')), getDocs(collection(db,'courses')),
+    getDocs(collection(db,'course_applications')), getDocs(collection(db,'internship_applications')),
+    getDocs(collection(db,'service_requests')), getDocs(collection(db,'it_services')),
+  ]);
+  document.getElementById('sCerts').textContent=c.size;
+  document.getElementById('sCourses').textContent=co.size;
+  document.getElementById('sCourseApps').textContent=ca.size;
+  document.getElementById('sInternApps').textContent=ia.size;
+  document.getElementById('sRequests').textContent=sr.size;
+  document.getElementById('sServices').textContent=sv.size;
+  const newCA=ca.docs.filter(d=>d.data().status==='new').length;
+  const newIA=ia.docs.filter(d=>d.data().status==='new').length;
+  const openSR=sr.docs.filter(d=>d.data().status==='open').length;
+  if(newCA>0){document.getElementById('caBadge').style.display='inline';document.getElementById('caBadge').textContent=newCA;}
+  if(newIA>0){document.getElementById('iaBadge').style.display='inline';document.getElementById('iaBadge').textContent=newIA;}
+  if(openSR>0){document.getElementById('srBadge').style.display='inline';document.getElementById('srBadge').textContent=openSR;}
+}
+
+// ── CERTIFICATES ──
+let certsCache=[];
+window.openCertModal = (data=null) => {
+  document.getElementById('certDocId').value=data?.id||'';
+  document.getElementById('certIdF').value=data?.certificate_id||'';
+  document.getElementById('certNameF').value=data?.name||'';
+  document.getElementById('certCollegeF').value=data?.college||'';
+  document.getElementById('certEmailF').value=data?.email||'';
+  document.getElementById('certModalTitle').textContent=data?'Edit Certificate':'Add Certificate';
+  new bootstrap.Modal(document.getElementById('certModal')).show();
+};
+window.saveCertificate = async () => {
+  const id=document.getElementById('certDocId').value;
+  const certId=document.getElementById('certIdF').value.toUpperCase().trim();
+  if(!certId||certId.length!==12){toast('Certificate ID must be exactly 12 characters.',false);return;}
+  const data={certificate_id:certId,name:document.getElementById('certNameF').value,college:document.getElementById('certCollegeF').value,email:document.getElementById('certEmailF').value};
+  try{
+    if(id) await updateDoc(doc(db,'certificates',id),data);
+    else await addDoc(collection(db,'certificates'),data);
+    bootstrap.Modal.getInstance(document.getElementById('certModal')).hide();
+    toast('Certificate saved!'); loadCerts();
+  }catch(e){toast('Error: '+e.message,false);}
+};
+async function loadCerts(){
+  try{
+    const snap=await getDocs(collection(db,'certificates'));
+    certsCache=snap.docs.map(d=>({id:d.id,...d.data()}));
+    renderCerts(certsCache);
+  }catch(e){document.getElementById('certsBody').innerHTML=`<tr><td colspan="5" class="text-center text-danger py-4">Error: ${e.message}</td></tr>`;}
+}
+window.filterCerts=()=>{const s=document.getElementById('certSearch').value.toLowerCase();renderCerts(certsCache.filter(c=>c.name?.toLowerCase().includes(s)||c.certificate_id?.toLowerCase().includes(s)||c.email?.toLowerCase().includes(s)));};
+function renderCerts(data){
+  document.getElementById('certsBody').innerHTML=data.length?data.map(c=>`<tr><td><code style="font-weight:700;color:var(--purple)">${c.certificate_id}</code></td><td>${c.name}</td><td>${c.college||'—'}</td><td>${c.email}</td><td><button class="btn btn-sm btn-outline-primary me-1" onclick='window.openCertModal(${JSON.stringify(c)})'><i class="fas fa-edit"></i></button><button class="btn btn-sm btn-outline-danger" onclick="delDoc('certificates','${c.id}','certificate')"><i class="fas fa-trash"></i></button></td></tr>`).join(''):'<tr><td colspan="5" class="text-center text-muted py-4">No certificates yet</td></tr>';
+}
+
+// ── COURSES ──
+window.openCourseModal = (data=null) => {
+  document.getElementById('courseDocId').value=data?.id||'';
+  document.getElementById('cTitle').value=data?.title||'';
+  document.getElementById('cCategory').value=data?.category||'Development';
+  document.getElementById('cLevel').value=data?.level||'Beginner';
+  document.getElementById('cDuration').value=data?.duration||'';
+  document.getElementById('cPrice').value=data?.price||'';
+  document.getElementById('cIcon').value=data?.icon||'fas fa-code';
+  document.getElementById('cColor').value=data?.color||'linear-gradient(135deg,#7A28CB,#9933FF)';
+  document.getElementById('cDesc').value=data?.description||'';
+  document.getElementById('cHighlights').value=(data?.highlights||[]).join('\n');
+  document.getElementById('cApplyLink').value=data?.applyLink||'https://wa.me/919150059199';
+  document.getElementById('cOrder').value=data?.order||1;
+  document.getElementById('cFeatured').checked=data?.featured||false;
+  new bootstrap.Modal(document.getElementById('courseModal')).show();
+};
+window.saveCourse = async () => {
+  const id=document.getElementById('courseDocId').value;
+  const data={title:document.getElementById('cTitle').value,category:document.getElementById('cCategory').value,level:document.getElementById('cLevel').value,duration:document.getElementById('cDuration').value,price:document.getElementById('cPrice').value,icon:document.getElementById('cIcon').value,color:document.getElementById('cColor').value,description:document.getElementById('cDesc').value,highlights:document.getElementById('cHighlights').value.split('\n').filter(Boolean),applyLink:document.getElementById('cApplyLink').value,order:Number(document.getElementById('cOrder').value)||1,featured:document.getElementById('cFeatured').checked,updatedAt:serverTimestamp()};
+  try{if(id)await updateDoc(doc(db,'courses',id),data);else{data.createdAt=serverTimestamp();await addDoc(collection(db,'courses'),data);}bootstrap.Modal.getInstance(document.getElementById('courseModal')).hide();toast('Course saved!');loadCourses();}catch(e){toast('Error: '+e.message,false);}
+};
+async function loadCourses(){
+  try{
+    const snap=await getDocs(collection(db,'courses'));
+    const rows=snap.docs.map(d=>{const c={id:d.id,...d.data()};return`<tr><td style="font-weight:600">${c.title}</td><td>${c.category||'—'}</td><td>${c.level||'—'}</td><td>${c.duration||'—'}</td><td>${c.price?'₹'+c.price:'Contact Us'}</td><td>${c.featured?'<span class="badge bg-success">Yes</span>':'<span class="badge bg-secondary">No</span>'}</td><td><button class="btn btn-sm btn-outline-primary me-1" onclick='window.openCourseModal(${JSON.stringify(c)})'><i class="fas fa-edit"></i></button><button class="btn btn-sm btn-outline-danger" onclick="delDoc('courses','${c.id}','course')"><i class="fas fa-trash"></i></button></td></tr>`;}).join('');
+    document.getElementById('coursesBody').innerHTML=rows||'<tr><td colspan="7" class="text-center text-muted py-4">No courses yet. Click + Add Course to create one.</td></tr>';
+  }catch(e){document.getElementById('coursesBody').innerHTML=`<tr><td colspan="7" class="text-center text-danger py-4">Error: ${e.message}</td></tr>`;}
+}
+
+// ── INTERNSHIPS ──
+window.openInternModal = (data=null) => {
+  document.getElementById('internDocId').value=data?.id||'';
+  document.getElementById('iTitle').value=data?.title||'';
+  document.getElementById('iDuration').value=data?.duration||'1 Month';
+  document.getElementById('iMode').value=data?.mode||'Remote';
+  document.getElementById('iLevel').value=data?.level||'Beginner';
+  document.getElementById('iStipend').value=data?.stipend||'Unpaid';
+  document.getElementById('iIcon').value=data?.icon||'fas fa-code';
+  document.getElementById('iColor').value=data?.color||'linear-gradient(135deg,#7A28CB,#9933FF)';
+  document.getElementById('iDesc').value=data?.description||'';
+  document.getElementById('iSkills').value=(data?.skills||[]).join('\n');
+  document.getElementById('iApplyLink').value=data?.applyLink||'https://wa.me/919150059199';
+  document.getElementById('iOrder').value=data?.order||1;
+  new bootstrap.Modal(document.getElementById('internModal')).show();
+};
+window.saveInternship = async () => {
+  const id=document.getElementById('internDocId').value;
+  const data={title:document.getElementById('iTitle').value,duration:document.getElementById('iDuration').value,mode:document.getElementById('iMode').value,level:document.getElementById('iLevel').value,stipend:document.getElementById('iStipend').value,icon:document.getElementById('iIcon').value,color:document.getElementById('iColor').value,description:document.getElementById('iDesc').value,skills:document.getElementById('iSkills').value.split('\n').filter(Boolean),applyLink:document.getElementById('iApplyLink').value,order:Number(document.getElementById('iOrder').value)||1};
+  try{if(id)await updateDoc(doc(db,'internship_programs',id),data);else await addDoc(collection(db,'internship_programs'),data);bootstrap.Modal.getInstance(document.getElementById('internModal')).hide();toast('Internship saved!');loadInterns();}catch(e){toast('Error: '+e.message,false);}
+};
+async function loadInterns(){
+  try{
+    const snap=await getDocs(collection(db,'internship_programs'));
+    const rows=snap.docs.map(d=>{const i={id:d.id,...d.data()};return`<tr><td style="font-weight:600">${i.title}</td><td>${i.duration||'—'}</td><td>${i.mode||'—'}</td><td>${i.level||'—'}</td><td><button class="btn btn-sm btn-outline-primary me-1" onclick='window.openInternModal(${JSON.stringify(i)})'><i class="fas fa-edit"></i></button><button class="btn btn-sm btn-outline-danger" onclick="delDoc('internship_programs','${i.id}','internship')"><i class="fas fa-trash"></i></button></td></tr>`;}).join('');
+    document.getElementById('internsBody').innerHTML=rows||'<tr><td colspan="5" class="text-center text-muted py-4">No internships yet. Click + Add Internship to create one.</td></tr>';
+  }catch(e){document.getElementById('internsBody').innerHTML=`<tr><td colspan="5" class="text-center text-danger py-4">Error: ${e.message}</td></tr>`;}
+}
+
+// ── IT SERVICES ──
+window.openSvcModal = (data=null) => {
+  document.getElementById('svcDocId').value=data?.id||'';
+  document.getElementById('sTitle').value=data?.title||'';
+  document.getElementById('sBadge').value=data?.badge||'';
+  document.getElementById('sIcon').value=data?.icon||'fas fa-code';
+  document.getElementById('sColor').value=data?.color||'#7A28CB';
+  document.getElementById('sDesc').value=data?.description||'';
+  document.getElementById('sTags').value=(data?.tags||[]).join('\n');
+  document.getElementById('sDeliverable').value=data?.deliverable||'';
+  document.getElementById('sOrder').value=data?.order||1;
+  new bootstrap.Modal(document.getElementById('svcModal')).show();
+};
+window.saveSvc = async () => {
+  const id=document.getElementById('svcDocId').value;
+  const data={title:document.getElementById('sTitle').value,badge:document.getElementById('sBadge').value,icon:document.getElementById('sIcon').value,color:document.getElementById('sColor').value,description:document.getElementById('sDesc').value,tags:document.getElementById('sTags').value.split('\n').filter(Boolean),deliverable:document.getElementById('sDeliverable').value,order:Number(document.getElementById('sOrder').value)||1};
+  try{if(id)await updateDoc(doc(db,'it_services',id),data);else await addDoc(collection(db,'it_services'),data);bootstrap.Modal.getInstance(document.getElementById('svcModal')).hide();toast('Service saved!');loadSvcs();}catch(e){toast('Error: '+e.message,false);}
+};
+async function loadSvcs(){
+  try{
+    const snap=await getDocs(collection(db,'it_services'));
+    const rows=snap.docs.map(d=>{const s={id:d.id,...d.data()};return`<tr><td style="font-weight:600">${s.title}</td><td>${s.badge||'—'}</td><td>${(s.tags||[]).join(', ')}</td><td><button class="btn btn-sm btn-outline-primary me-1" onclick='window.openSvcModal(${JSON.stringify(s)})'><i class="fas fa-edit"></i></button><button class="btn btn-sm btn-outline-danger" onclick="delDoc('it_services','${s.id}','service')"><i class="fas fa-trash"></i></button></td></tr>`;}).join('');
+    document.getElementById('svcBody').innerHTML=rows||'<tr><td colspan="4" class="text-center text-muted py-4">No services yet. Click + Add Service to create one.</td></tr>';
+  }catch(e){document.getElementById('svcBody').innerHTML=`<tr><td colspan="4" class="text-center text-danger py-4">Error: ${e.message}</td></tr>`;}
+}
+
+// ── APPLICATIONS & REQUESTS ──
+function appCard(a, coll) {
+  const date = a.createdAt?.toDate ? a.createdAt.toDate().toLocaleDateString('en-IN') : '—';
+  const statusOpts = ['new','contacted','enrolled','rejected'].map(s=>`<option ${a.status===s?'selected':''}>${s}</option>`).join('');
+  return `<div class="admin-card mb-3">
+    <div class="d-flex justify-content-between align-items-start flex-wrap gap-2 mb-3">
+      <div><h6 style="font-weight:700;margin:0">${a.name||'—'}</h6><small class="text-muted">${date}</small></div>
+      <div class="d-flex gap-2">
+        <select class="input-admin" style="width:140px;padding:6px 10px" onchange="updateStatus('${coll}','${a.id}',this.value)">${statusOpts}</select>
+        <button class="btn btn-sm btn-outline-danger" onclick="delDoc('${coll}','${a.id}','application')"><i class="fas fa-trash"></i></button>
+      </div>
+    </div>
+    <div class="row g-2 small">
+      <div class="col-md-3"><span class="text-muted d-block">Email</span><a href="mailto:${a.email}">${a.email||'—'}</a></div>
+      <div class="col-md-3"><span class="text-muted d-block">Phone</span><a href="tel:${a.phone}">${a.phone||'—'}</a></div>
+      <div class="col-md-3"><span class="text-muted d-block">College</span>${a.college||'—'}</div>
+      <div class="col-md-3"><span class="text-muted d-block">${coll==='course_applications'?'Plan':'Track'}</span>${a.plan||a.internshipTrack||a.courseName||'—'}</div>
+      ${a.yearOfStudy?`<div class="col-md-3"><span class="text-muted d-block">Year</span>${a.yearOfStudy}</div>`:''}
+      ${a.major?`<div class="col-md-3"><span class="text-muted d-block">Major</span>${a.major}</div>`:''}
+      ${a.skills||a.reason?`<div class="col-12"><span class="text-muted d-block">Notes</span>${a.skills||a.reason||'—'}</div>`:''}
+    </div>
+  </div>`;
+}
+
+async function loadCourseApps(){
+  try{
+    const snap=await getDocs(collection(db,'course_applications'));
+    const apps=snap.docs.map(d=>({id:d.id,...d.data()})).sort((a,b)=>(b.createdAt?.seconds||0)-(a.createdAt?.seconds||0));
+    document.getElementById('courseAppsContainer').innerHTML=apps.length?apps.map(a=>appCard(a,'course_applications')).join(''):'<div class="admin-card text-center text-muted py-5">No course applications yet</div>';
+  }catch(e){document.getElementById('courseAppsContainer').innerHTML=`<div class="admin-card text-center text-danger py-5">Error: ${e.message}</div>`;}
+}
+async function loadInternApps(){
+  try{
+    const snap=await getDocs(collection(db,'internship_applications'));
+    const apps=snap.docs.map(d=>({id:d.id,...d.data()})).sort((a,b)=>(b.createdAt?.seconds||0)-(a.createdAt?.seconds||0));
+    document.getElementById('internAppsContainer').innerHTML=apps.length?apps.map(a=>appCard(a,'internship_applications')).join(''):'<div class="admin-card text-center text-muted py-5">No internship applications yet</div>';
+  }catch(e){document.getElementById('internAppsContainer').innerHTML=`<div class="admin-card text-center text-danger py-5">Error: ${e.message}</div>`;}
+}
+async function loadRequests(){
+  try{
+    const snap=await getDocs(collection(db,'service_requests'));
+    const filter=document.getElementById('reqFilter').value;
+    const reqs=snap.docs.map(d=>({id:d.id,...d.data()}))
+      .filter(r=>filter==='all'||r.status===filter)
+      .sort((a,b)=>(b.createdAt?.seconds||0)-(a.createdAt?.seconds||0));
+    document.getElementById('requestsContainer').innerHTML=reqs.length?reqs.map(r=>`
+      <div class="admin-card mb-3">
+        <div class="d-flex justify-content-between align-items-start flex-wrap gap-2 mb-3">
+          <div><h6 style="font-weight:700;margin:0">${r.serviceName||'General Inquiry'}</h6><small class="text-muted">${r.createdAt?.toDate?r.createdAt.toDate().toLocaleDateString('en-IN'):'—'}</small></div>
+          <div class="d-flex gap-2">
+            <select class="input-admin" style="width:150px;padding:6px 10px" onchange="updateStatus('service_requests','${r.id}',this.value)">
+              <option ${r.status==='open'?'selected':''}>open</option>
+              <option ${r.status==='in-progress'?'selected':''}>in-progress</option>
+              <option ${r.status==='done'?'selected':''}>done</option>
+            </select>
+            <button class="btn btn-sm btn-outline-danger" onclick="delDoc('service_requests','${r.id}','request')"><i class="fas fa-trash"></i></button>
+          </div>
+        </div>
+        <div class="row g-2 small">
+          <div class="col-md-3"><span class="text-muted d-block">Name</span>${r.name||'—'}</div>
+          <div class="col-md-3"><span class="text-muted d-block">Email</span><a href="mailto:${r.email}">${r.email||'—'}</a></div>
+          <div class="col-md-3"><span class="text-muted d-block">Phone</span><a href="tel:${r.phone}">${r.phone||'—'}</a></div>
+          <div class="col-md-3"><span class="text-muted d-block">Budget</span>${r.budget||'—'}</div>
+          <div class="col-md-3"><span class="text-muted d-block">Timeline</span>${r.timeline||'—'}</div>
+          <div class="col-md-3"><span class="text-muted d-block">Company</span>${r.company||'—'}</div>
+          <div class="col-12"><span class="text-muted d-block">Description</span>${r.description||'—'}</div>
+        </div>
+      </div>`).join(''):'<div class="admin-card text-center text-muted py-5">No requests found</div>';
+  }catch(e){document.getElementById('requestsContainer').innerHTML=`<div class="admin-card text-center text-danger py-5">Error: ${e.message}</div>`;}
+}
+
+window.updateStatus = async (coll, id, status) => { await updateDoc(doc(db,coll,id),{status}); toast('Status updated'); loadDashboard(); };
+window.delDoc = async (coll, id, label) => {
+  if(!confirm(`Delete this ${label}?`)) return;
+  await deleteDoc(doc(db,coll,id)); toast(`${label} deleted`);
+  ({certificates:loadCerts,courses:loadCourses,internship_programs:loadInterns,it_services:loadSvcs,course_applications:loadCourseApps,internship_applications:loadInternApps,service_requests:loadRequests})[coll]?.();
+};
+</script>
+</body>
+</html>

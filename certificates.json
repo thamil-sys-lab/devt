@@ -1,0 +1,50 @@
+[
+  {
+    "certificate_id": "DEVS9A2B8C4D", 
+    "name": "Kushal LK - Course & Internship ",
+    "college": "Panimalar Engineering College",
+    "email": "kushal.lk04@gmail.com"
+  },
+  {
+    "certificate_id": "DEVS26004567",
+    "name": "Raghul M - Course & Internship",
+    "college": "Panimalar Engineering College",
+    "email": "raghulmadhavan288@gmail.com"
+  },
+  {
+    "certificate_id": "DEVS26007891",
+    "name": "Sakthi sundaresan - Course & Internship",
+    "college": "Panimalar Engineering College",
+    "email": "sakthisundaresan69@gmail.com"
+  },
+  {
+    "certificate_id": "DEVS26015678",
+    "name": "M NIKHIL - Course & Internship",
+    "college": "Panimalar Engineering College",
+    "email": "mnikhil1607@gmail.com"
+  },
+  {
+    "certificate_id": "DEVS26018902",
+    "name": "Sundiep Raam P - Course & Internship",
+    "college": "Panimalar Engineering College",
+    "email": "sundiepraam@gmail.com"
+  },
+  {
+    "certificate_id": "DEVS26021456",
+    "name": "NISHANTHKUMAR R - Course & Internship",
+    "college": "Panimalar Engineering College",
+    "email": "nishanthkumar2306@gmail.com"
+  },
+  {
+    "certificate_id": "DEVS26029873",
+    "name": "Mohamed N - Course & Internship",
+    "college": "Panimalar Engineering College",
+    "email": "Mohamednyaz786@gmail.com"
+  },
+  {
+    "certificate_id": "DEVS26030112",
+    "name": "K Maneesh - Course & Internship",
+    "college": "Panimalar Engineering College",
+    "email": "Maneeshmunnavr@gmail.com"
+  }
+]

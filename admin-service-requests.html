@@ -1,0 +1,331 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Service Requests — Devverse Admin</title>
+  <link rel="icon" type="image/png" href="assets/favicon.png">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"/>
+  <link rel="stylesheet" href="css/style.css">
+  <style>
+    .app-card { background:white;border-radius:16px;border:1px solid var(--border);padding:24px;margin-bottom:16px;transition:box-shadow 0.2s; }
+    .app-card:hover { box-shadow:var(--shadow-md); }
+    .app-card.status-open { border-left:4px solid #f59e0b; }
+    .app-card.status-in-progress { border-left:4px solid var(--purple); }
+    .app-card.status-done { border-left:4px solid #22c55e; }
+    .app-card.status-cancelled { border-left:4px solid #ef4444; }
+    .sb-open { background:#fef3c7;color:#92400e;padding:4px 12px;border-radius:20px;font-size:12px;font-weight:600; }
+    .sb-in-progress { background:var(--purple-light);color:var(--purple);padding:4px 12px;border-radius:20px;font-size:12px;font-weight:600; }
+    .sb-done { background:#d1fae5;color:#065f46;padding:4px 12px;border-radius:20px;font-size:12px;font-weight:600; }
+    .sb-cancelled { background:#fee2e2;color:#991b1b;padding:4px 12px;border-radius:20px;font-size:12px;font-weight:600; }
+    .info-grid { display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:16px;margin-top:16px; }
+    .info-block label { font-size:11px;font-weight:700;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.06em;display:block;margin-bottom:4px; }
+    .info-block span { font-size:14px;font-weight:500;color:var(--text); }
+    .info-block a { font-size:14px;font-weight:500;color:var(--purple); }
+    .empty-state { text-align:center;padding:80px 24px;background:white;border-radius:16px;border:1px dashed var(--border); }
+    .stat-pill { background:white;border:1px solid var(--border);border-radius:12px;padding:16px 20px;text-align:center; }
+    .stat-pill .num { font-size:28px;font-weight:800;line-height:1;margin-bottom:4px; }
+    .topbar-page { background:white;border-bottom:1px solid var(--border);padding:16px 32px;display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap;position:sticky;top:0;z-index:50; }
+    .desc-box { background:var(--purple-pale);border-radius:10px;padding:14px 16px;margin-top:14px; }
+    .desc-box label { font-size:11px;font-weight:700;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.06em;display:block;margin-bottom:6px; }
+    .desc-box p { font-size:14px;margin:0;line-height:1.7; }
+    .priority-tag { display:inline-flex;align-items:center;gap:5px;padding:4px 12px;border-radius:20px;font-size:12px;font-weight:600; }
+    .budget-badge { background:#e0f2fe;color:#0369a1;padding:4px 12px;border-radius:20px;font-size:12px;font-weight:600; }
+    @media(max-width:768px){ .admin-sidebar{display:none} .admin-main{margin-left:0!important} .topbar-page{padding:12px 16px} }
+  </style>
+</head>
+<body style="background:var(--purple-pale)">
+
+<div id="authGate" style="display:none">
+  <div class="admin-login-wrap" id="loginScreen">
+    <div class="admin-login-card">
+      <div class="text-center mb-4">
+        <img src="assets/logo.png" alt="Devverse" style="height:38px" class="mb-3"><br>
+        <h4 style="font-weight:800">Admin Login</h4>
+      </div>
+      <div id="loginError" class="alert alert-danger py-2 small mb-3" style="display:none"></div>
+      <button id="googleBtn" onclick="doGoogleLogin()" class="w-100 d-flex align-items-center justify-content-center gap-2 mb-3"
+        style="border:1.5px solid var(--border);border-radius:10px;background:white;padding:11px 16px;font-family:Poppins,sans-serif;font-size:14px;font-weight:500;cursor:pointer;color:var(--text)">
+        <svg width="18" height="18" viewBox="0 0 48 48"><path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"/><path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"/><path fill="#FBBC05" d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z"/><path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.18 1.48-4.97 2.35-8.16 2.35-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"/></svg>
+        Continue with Google
+      </button>
+      <div class="d-flex align-items-center gap-2 mb-3"><hr class="flex-grow-1 m-0" style="border-color:var(--border)"><span class="text-muted" style="font-size:12px">or</span><hr class="flex-grow-1 m-0" style="border-color:var(--border)"></div>
+      <input type="email" id="loginEmail" class="input-admin mb-3" placeholder="Admin email">
+      <input type="password" id="loginPassword" class="input-admin mb-3" placeholder="Password" onkeydown="if(event.key==='Enter')doLogin()">
+      <button class="btn-purple w-100" onclick="doLogin()"><i class="fas fa-sign-in-alt me-2"></i>Sign In</button>
+    </div>
+  </div>
+</div>
+
+<div id="appContent" style="display:none">
+  <div class="admin-sidebar">
+    <div class="brand d-flex align-items-center gap-2">
+      <img src="assets/logo.png" alt="Devverse" style="height:28px;filter:brightness(0) invert(1)">
+      <span style="color:rgba(255,255,255,0.5);font-size:11px">Admin Panel</span>
+    </div>
+    <nav class="p-2 mt-2">
+      <a href="admin.html" class="nav-link"><i class="fas fa-tachometer-alt"></i>Dashboard</a>
+      <a href="admin.html" class="nav-link"><i class="fas fa-certificate"></i>Certificates</a>
+      <a href="admin.html" class="nav-link"><i class="fas fa-graduation-cap"></i>Courses</a>
+      <a href="admin.html" class="nav-link"><i class="fas fa-briefcase"></i>Internships</a>
+      <a href="admin.html" class="nav-link"><i class="fas fa-code"></i>IT Services</a>
+      <hr style="border-color:rgba(255,255,255,0.08);margin:8px">
+      <div style="padding:6px 10px;font-size:10px;font-weight:700;color:rgba(255,255,255,0.3);letter-spacing:0.1em;text-transform:uppercase">Applications</div>
+      <a href="admin-course-applications.html" class="nav-link"><i class="fas fa-file-alt"></i>Course Applications</a>
+      <a href="admin-intern-applications.html" class="nav-link"><i class="fas fa-user-plus"></i>Internship Applications</a>
+      <a href="admin-service-requests.html" class="nav-link active"><i class="fas fa-inbox"></i>Service Requests</a>
+      <hr style="border-color:rgba(255,255,255,0.08);margin:8px">
+      <a href="index.html" class="nav-link" target="_blank"><i class="fas fa-external-link-alt"></i>View Site</a>
+      <a href="#" class="nav-link" style="color:#f87171!important" onclick="doLogout()"><i class="fas fa-sign-out-alt"></i>Logout</a>
+    </nav>
+  </div>
+
+  <div class="admin-main">
+    <div class="topbar-page">
+      <div>
+        <h4 style="font-weight:800;margin:0"><i class="fas fa-inbox me-2" style="color:var(--purple)"></i>Service Requests</h4>
+        <p class="text-muted small mb-0">IT service inquiries submitted through the website</p>
+      </div>
+      <div class="d-flex gap-2 align-items-center flex-wrap">
+        <div style="position:relative">
+          <i class="fas fa-search" style="position:absolute;left:12px;top:50%;transform:translateY(-50%);color:var(--text-muted)"></i>
+          <input type="text" id="searchInput" class="input-admin" style="padding-left:36px;width:220px" placeholder="Search name, email, service…" oninput="filterReqs()">
+        </div>
+        <select id="statusFilter" class="input-admin" style="width:160px" onchange="filterReqs()">
+          <option value="all">All Status</option>
+          <option value="open">Open</option>
+          <option value="in-progress">In Progress</option>
+          <option value="done">Done</option>
+          <option value="cancelled">Cancelled</option>
+        </select>
+        <select id="serviceFilter" class="input-admin" style="width:190px" onchange="filterReqs()">
+          <option value="all">All Services</option>
+        </select>
+        <button class="btn-purple" style="font-size:13px;padding:9px 18px;white-space:nowrap" onclick="exportCSV()">
+          <i class="fas fa-download me-1"></i>Export CSV
+        </button>
+      </div>
+    </div>
+
+    <div style="padding:24px">
+      <!-- Stats -->
+      <div class="row g-3 mb-4">
+        <div class="col-6 col-md-3"><div class="stat-pill"><div class="num text-gradient" id="sAll">—</div><div class="text-muted small">Total</div></div></div>
+        <div class="col-6 col-md-3"><div class="stat-pill"><div class="num" style="color:#f59e0b" id="sOpen">—</div><div class="text-muted small">Open</div></div></div>
+        <div class="col-6 col-md-3"><div class="stat-pill"><div class="num" style="color:var(--purple)" id="sProgress">—</div><div class="text-muted small">In Progress</div></div></div>
+        <div class="col-6 col-md-3"><div class="stat-pill"><div class="num" style="color:#22c55e" id="sDone">—</div><div class="text-muted small">Done</div></div></div>
+      </div>
+
+      <div id="reqsList">
+        <div class="text-center py-5"><div class="spinner-border" style="color:var(--purple)"></div><p class="text-muted mt-3">Loading requests…</p></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="toast-msg" id="toastMsg"></div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<script type="module">
+import { db, auth } from './js/firebase-config.js';
+import { signInWithEmailAndPassword, signOut, onAuthStateChanged, GoogleAuthProvider, signInWithPopup } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js';
+import { collection, getDocs, updateDoc, deleteDoc, doc } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js';
+
+const ALLOWED = 'vjysupermacy@gmail.com';
+let allReqs = [];
+
+onAuthStateChanged(auth, user => {
+  if (user && user.email === ALLOWED) {
+    document.getElementById('authGate').style.display = 'none';
+    document.getElementById('appContent').style.display = 'block';
+    loadReqs();
+  } else if (user) {
+    signOut(auth); showErr('Access denied.');
+    document.getElementById('authGate').style.display = 'block';
+  } else {
+    document.getElementById('authGate').style.display = 'block';
+    document.getElementById('loginScreen').style.display = 'flex';
+  }
+});
+
+function showErr(msg) { const el=document.getElementById('loginError'); el.style.display='block'; el.textContent=msg; }
+window.doGoogleLogin = async () => { try { await signInWithPopup(auth, new GoogleAuthProvider()); } catch(e) { showErr('Google sign-in failed.'); } };
+window.doLogin = async () => { try { await signInWithEmailAndPassword(auth, document.getElementById('loginEmail').value, document.getElementById('loginPassword').value); } catch(e) { showErr('Invalid credentials.'); } };
+window.doLogout = () => signOut(auth).then(() => location.href='admin.html');
+
+async function loadReqs() {
+  try {
+    const snap = await getDocs(collection(db, 'service_requests'));
+    allReqs = snap.docs.map(d => ({ id: d.id, ...d.data() }))
+      .sort((a, b) => (b.createdAt?.seconds||0) - (a.createdAt?.seconds||0));
+
+    // Populate service filter
+    const services = [...new Set(allReqs.map(r => r.serviceName).filter(Boolean))];
+    const sf = document.getElementById('serviceFilter');
+    services.forEach(s => { const o=document.createElement('option'); o.value=s; o.textContent=s; sf.appendChild(o); });
+
+    updateStats();
+    renderReqs(allReqs);
+  } catch(e) {
+    document.getElementById('reqsList').innerHTML = `<div class="empty-state"><div style="font-size:56px;opacity:0.15;margin-bottom:16px">⚠️</div><h5>Error: ${e.message}</h5></div>`;
+  }
+}
+
+function updateStats() {
+  document.getElementById('sAll').textContent = allReqs.length;
+  document.getElementById('sOpen').textContent = allReqs.filter(r=>r.status==='open'||!r.status).length;
+  document.getElementById('sProgress').textContent = allReqs.filter(r=>r.status==='in-progress').length;
+  document.getElementById('sDone').textContent = allReqs.filter(r=>r.status==='done').length;
+}
+
+window.filterReqs = () => {
+  const s = document.getElementById('searchInput').value.toLowerCase();
+  const st = document.getElementById('statusFilter').value;
+  const sv = document.getElementById('serviceFilter').value;
+  const filtered = allReqs.filter(r => {
+    const matchSearch = !s || r.name?.toLowerCase().includes(s) || r.email?.toLowerCase().includes(s) || r.serviceName?.toLowerCase().includes(s) || r.company?.toLowerCase().includes(s);
+    const matchStatus = st==='all' || (r.status||'open')===st;
+    const matchSvc = sv==='all' || r.serviceName===sv;
+    return matchSearch && matchStatus && matchSvc;
+  });
+  renderReqs(filtered);
+};
+
+function statusBadge(status) {
+  const map = { 'open':'sb-open','in-progress':'sb-in-progress','done':'sb-done','cancelled':'sb-cancelled' };
+  const labels = { 'open':'Open','in-progress':'In Progress','done':'Done','cancelled':'Cancelled' };
+  const cls = map[status] || 'sb-open';
+  const label = labels[status] || 'Open';
+  return `<span class="${cls}">${label}</span>`;
+}
+
+function renderReqs(reqs) {
+  if (!reqs.length) {
+    document.getElementById('reqsList').innerHTML = `
+      <div class="empty-state">
+        <div style="font-size:56px;opacity:0.15;margin-bottom:16px">📬</div>
+        <h5 style="font-weight:700">No service requests found</h5>
+        <p class="text-muted">Try changing the filters or wait for new submissions</p>
+      </div>`;
+    return;
+  }
+
+  document.getElementById('reqsList').innerHTML = reqs.map(r => {
+    const status = r.status || 'open';
+    const date = r.createdAt?.toDate ? r.createdAt.toDate().toLocaleDateString('en-IN',{day:'numeric',month:'short',year:'numeric'}) : '—';
+    const time = r.createdAt?.toDate ? r.createdAt.toDate().toLocaleTimeString('en-IN',{hour:'2-digit',minute:'2-digit'}) : '';
+
+    return `
+    <div class="app-card status-${status}">
+      <div class="d-flex justify-content-between align-items-start flex-wrap gap-3">
+        <div>
+          <div class="d-flex align-items-center gap-2 flex-wrap mb-1">
+            <h5 style="font-weight:800;margin:0">${r.serviceName || 'Custom Request'}</h5>
+            ${statusBadge(status)}
+            ${r.budget ? `<span class="budget-badge">💰 ${r.budget}</span>` : ''}
+          </div>
+          <div class="text-muted small">
+            <i class="fas fa-user me-1"></i>${r.name||'—'}
+            ${r.company ? `&nbsp;·&nbsp;<i class="fas fa-building me-1"></i>${r.company}` : ''}
+            &nbsp;·&nbsp;<i class="fas fa-clock me-1"></i>${date} ${time}
+          </div>
+        </div>
+        <div class="d-flex gap-2 align-items-center flex-wrap">
+          <select class="input-admin" style="width:150px;padding:7px 12px;font-size:13px" onchange="changeStatus('${r.id}',this.value)">
+            <option ${status==='open'?'selected':''} value="open">Open</option>
+            <option ${status==='in-progress'?'selected':''} value="in-progress">In Progress</option>
+            <option ${status==='done'?'selected':''} value="done">Done</option>
+            <option ${status==='cancelled'?'selected':''} value="cancelled">Cancelled</option>
+          </select>
+          <a href="mailto:${r.email}?subject=Regarding your Devverse Service Request - ${encodeURIComponent(r.serviceName||'')}" class="btn-purple" style="font-size:12px;padding:7px 14px;text-decoration:none">
+            <i class="fas fa-envelope me-1"></i>Reply
+          </a>
+          <a href="https://wa.me/${(r.phone||'').replace(/\D/g,'')}" target="_blank" class="btn-outline-purple" style="font-size:12px;padding:7px 14px;text-decoration:none">
+            <i class="fab fa-whatsapp me-1"></i>WhatsApp
+          </a>
+          <button onclick="deleteReq('${r.id}')" style="background:#fee2e2;color:#991b1b;border:none;border-radius:8px;padding:7px 12px;cursor:pointer;font-size:13px">
+            <i class="fas fa-trash"></i>
+          </button>
+        </div>
+      </div>
+
+      <div class="info-grid">
+        <div class="info-block"><label>Email</label><a href="mailto:${r.email}">${r.email||'—'}</a></div>
+        <div class="info-block"><label>Phone</label><a href="tel:${r.phone}">${r.phone||'—'}</a></div>
+        <div class="info-block"><label>Budget</label><span>${r.budget||'Not specified'}</span></div>
+        <div class="info-block"><label>Timeline</label><span>${r.timeline||'Not specified'}</span></div>
+        ${r.company ? `<div class="info-block"><label>Company</label><span>${r.company}</span></div>` : ''}
+      </div>
+
+      ${r.description ? `
+      <div class="desc-box">
+        <label>Project Description</label>
+        <p>${r.description}</p>
+      </div>` : ''}
+
+      <!-- Admin Notes -->
+      <div class="mt-3">
+        <details>
+          <summary style="font-size:13px;font-weight:600;color:var(--purple);cursor:pointer;padding:8px 0">
+            <i class="fas fa-sticky-note me-1"></i>Add Internal Note
+          </summary>
+          <div class="mt-2 d-flex gap-2">
+            <textarea class="input-admin" id="note-${r.id}" rows="2" placeholder="Add a private note about this request…" style="flex:1;font-size:13px">${r.adminNote||''}</textarea>
+            <button onclick="saveNote('${r.id}')" class="btn-purple" style="font-size:12px;padding:8px 14px;align-self:flex-end">Save</button>
+          </div>
+        </details>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+window.changeStatus = async (id, status) => {
+  try {
+    await updateDoc(doc(db,'service_requests',id), { status });
+    const req = allReqs.find(r=>r.id===id);
+    if (req) req.status = status;
+    updateStats(); filterReqs();
+    toast('Status updated ✓');
+  } catch(e) { toast('Error: '+e.message, false); }
+};
+
+window.saveNote = async (id) => {
+  const note = document.getElementById('note-'+id).value;
+  try {
+    await updateDoc(doc(db,'service_requests',id), { adminNote: note });
+    const req = allReqs.find(r=>r.id===id);
+    if (req) req.adminNote = note;
+    toast('Note saved ✓');
+  } catch(e) { toast('Error: '+e.message, false); }
+};
+
+window.deleteReq = async (id) => {
+  if (!confirm('Delete this service request? This cannot be undone.')) return;
+  await deleteDoc(doc(db,'service_requests',id));
+  allReqs = allReqs.filter(r=>r.id!==id);
+  updateStats(); filterReqs();
+  toast('Request deleted');
+};
+
+window.exportCSV = () => {
+  const rows = [['Service','Name','Email','Phone','Company','Budget','Timeline','Status','Date','Description']];
+  allReqs.forEach(r => {
+    const date = r.createdAt?.toDate ? r.createdAt.toDate().toLocaleDateString('en-IN') : '';
+    rows.push([r.serviceName||'',r.name||'',r.email||'',r.phone||'',r.company||'',r.budget||'',r.timeline||'',r.status||'open',date,r.description||'']);
+  });
+  const csv = rows.map(r=>r.map(v=>`"${String(v).replace(/"/g,'""')}"`).join(',')).join('\n');
+  const el = document.createElement('a');
+  el.href = 'data:text/csv;charset=utf-8,' + encodeURIComponent(csv);
+  el.download = `service-requests-${new Date().toISOString().split('T')[0]}.csv`;
+  el.click();
+  toast('CSV exported ✓');
+};
+
+function toast(msg, ok=true) {
+  const t=document.getElementById('toastMsg'); t.textContent=msg;
+  t.style.background=ok?'var(--purple-dark)':'#991b1b';
+  t.classList.add('show'); setTimeout(()=>t.classList.remove('show'),3000);
+}
+</script>
+</body>
+</html>

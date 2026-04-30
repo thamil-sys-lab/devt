@@ -1,0 +1,291 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Course Applications — Devverse Admin</title>
+  <link rel="icon" type="image/png" href="assets/favicon.png">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"/>
+  <link rel="stylesheet" href="css/style.css">
+  <style>
+    .app-card {
+      background: white; border-radius: 16px;
+      border: 1px solid var(--border);
+      padding: 24px; margin-bottom: 16px;
+      transition: box-shadow 0.2s;
+    }
+    .app-card:hover { box-shadow: var(--shadow-md); }
+    .app-card.status-new { border-left: 4px solid #f59e0b; }
+    .app-card.status-contacted { border-left: 4px solid var(--purple); }
+    .app-card.status-enrolled { border-left: 4px solid #22c55e; }
+    .app-card.status-rejected { border-left: 4px solid #ef4444; }
+    .status-badge-new { background:#fef3c7;color:#92400e;padding:4px 12px;border-radius:20px;font-size:12px;font-weight:600; }
+    .status-badge-contacted { background:var(--purple-light);color:var(--purple);padding:4px 12px;border-radius:20px;font-size:12px;font-weight:600; }
+    .status-badge-enrolled { background:#d1fae5;color:#065f46;padding:4px 12px;border-radius:20px;font-size:12px;font-weight:600; }
+    .status-badge-rejected { background:#fee2e2;color:#991b1b;padding:4px 12px;border-radius:20px;font-size:12px;font-weight:600; }
+    .info-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: 16px; margin-top: 16px; }
+    .info-block label { font-size: 11px; font-weight: 700; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.06em; display: block; margin-bottom: 4px; }
+    .info-block span { font-size: 14px; font-weight: 500; color: var(--text); }
+    .info-block a { font-size: 14px; font-weight: 500; color: var(--purple); }
+    .empty-state { text-align: center; padding: 80px 24px; background: white; border-radius: 16px; border: 1px dashed var(--border); }
+    .empty-icon { font-size: 56px; opacity: 0.15; margin-bottom: 16px; }
+    .stat-pill { background: white; border: 1px solid var(--border); border-radius: 12px; padding: 16px 20px; text-align: center; }
+    .stat-pill .num { font-size: 28px; font-weight: 800; line-height: 1; margin-bottom: 4px; }
+    .topbar-page { background: white; border-bottom: 1px solid var(--border); padding: 16px 32px; display: flex; align-items: center; justify-content: space-between; gap: 16px; flex-wrap: wrap; position: sticky; top: 0; z-index: 50; }
+    @media(max-width:768px){ .admin-sidebar{display:none} .admin-main{margin-left:0!important} .topbar-page{padding:12px 16px} }
+  </style>
+</head>
+<body style="background:var(--purple-pale)">
+
+<div id="authGate" style="display:none">
+  <!-- Login wall -->
+  <div class="admin-login-wrap" id="loginScreen">
+    <div class="admin-login-card">
+      <div class="text-center mb-4">
+        <img src="assets/logo.png" alt="Devverse" style="height:38px" class="mb-3"><br>
+        <h4 style="font-weight:800">Admin Login</h4>
+      </div>
+      <div id="loginError" class="alert alert-danger py-2 small mb-3" style="display:none"></div>
+      <button id="googleBtn" onclick="doGoogleLogin()" class="w-100 d-flex align-items-center justify-content-center gap-2 mb-3"
+        style="border:1.5px solid var(--border);border-radius:10px;background:white;padding:11px 16px;font-family:Poppins,sans-serif;font-size:14px;font-weight:500;cursor:pointer;color:var(--text)">
+        <svg width="18" height="18" viewBox="0 0 48 48"><path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"/><path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"/><path fill="#FBBC05" d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z"/><path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.18 1.48-4.97 2.35-8.16 2.35-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"/></svg>
+        Continue with Google
+      </button>
+      <div class="d-flex align-items-center gap-2 mb-3"><hr class="flex-grow-1 m-0" style="border-color:var(--border)"><span class="text-muted" style="font-size:12px">or</span><hr class="flex-grow-1 m-0" style="border-color:var(--border)"></div>
+      <input type="email" id="loginEmail" class="input-admin mb-3" placeholder="Admin email">
+      <input type="password" id="loginPassword" class="input-admin mb-3" placeholder="Password" onkeydown="if(event.key==='Enter')doLogin()">
+      <button class="btn-purple w-100" onclick="doLogin()"><i class="fas fa-sign-in-alt me-2"></i>Sign In</button>
+    </div>
+  </div>
+</div>
+
+<div id="appContent" style="display:none">
+  <!-- Sidebar -->
+  <div class="admin-sidebar">
+    <div class="brand d-flex align-items-center gap-2">
+      <img src="assets/logo.png" alt="Devverse" style="height:28px;filter:brightness(0) invert(1)">
+      <span style="color:rgba(255,255,255,0.5);font-size:11px">Admin Panel</span>
+    </div>
+    <nav class="p-2 mt-2">
+      <a href="admin.html" class="nav-link"><i class="fas fa-tachometer-alt"></i>Dashboard</a>
+      <a href="admin.html" class="nav-link"><i class="fas fa-certificate"></i>Certificates</a>
+      <a href="admin.html" class="nav-link"><i class="fas fa-graduation-cap"></i>Courses</a>
+      <a href="admin.html" class="nav-link"><i class="fas fa-briefcase"></i>Internships</a>
+      <a href="admin.html" class="nav-link"><i class="fas fa-code"></i>IT Services</a>
+      <hr style="border-color:rgba(255,255,255,0.08);margin:8px">
+      <div style="padding:6px 10px;font-size:10px;font-weight:700;color:rgba(255,255,255,0.3);letter-spacing:0.1em;text-transform:uppercase">Applications</div>
+      <a href="admin-course-applications.html" class="nav-link active"><i class="fas fa-file-alt"></i>Course Applications</a>
+      <a href="admin-intern-applications.html" class="nav-link"><i class="fas fa-user-plus"></i>Internship Applications</a>
+      <a href="admin-service-requests.html" class="nav-link"><i class="fas fa-inbox"></i>Service Requests</a>
+      <hr style="border-color:rgba(255,255,255,0.08);margin:8px">
+      <a href="index.html" class="nav-link" target="_blank"><i class="fas fa-external-link-alt"></i>View Site</a>
+      <a href="#" class="nav-link" style="color:#f87171!important" onclick="doLogout()"><i class="fas fa-sign-out-alt"></i>Logout</a>
+    </nav>
+  </div>
+
+  <!-- Main -->
+  <div class="admin-main">
+    <!-- Top Bar -->
+    <div class="topbar-page">
+      <div>
+        <h4 style="font-weight:800;margin:0"><i class="fas fa-graduation-cap me-2" style="color:var(--purple)"></i>Course Applications</h4>
+        <p class="text-muted small mb-0">All course enrolment submissions from the website</p>
+      </div>
+      <div class="d-flex gap-2 align-items-center flex-wrap">
+        <div style="position:relative">
+          <i class="fas fa-search" style="position:absolute;left:12px;top:50%;transform:translateY(-50%);color:var(--text-muted)"></i>
+          <input type="text" id="searchInput" class="input-admin" style="padding-left:36px;width:220px" placeholder="Search name, email…" oninput="filterApps()">
+        </div>
+        <select id="statusFilter" class="input-admin" style="width:150px" onchange="filterApps()">
+          <option value="all">All Status</option>
+          <option value="new">New</option>
+          <option value="contacted">Contacted</option>
+          <option value="enrolled">Enrolled</option>
+          <option value="rejected">Rejected</option>
+        </select>
+        <button class="btn-purple" style="font-size:13px;padding:9px 18px;white-space:nowrap" onclick="exportCSV()">
+          <i class="fas fa-download me-1"></i>Export CSV
+        </button>
+      </div>
+    </div>
+
+    <div style="padding:24px">
+      <!-- Stats Row -->
+      <div class="row g-3 mb-4" id="statsRow">
+        <div class="col-6 col-md-3"><div class="stat-pill"><div class="num text-gradient" id="sAll">—</div><div class="text-muted small">Total</div></div></div>
+        <div class="col-6 col-md-3"><div class="stat-pill"><div class="num" style="color:#f59e0b" id="sNew">—</div><div class="text-muted small">New</div></div></div>
+        <div class="col-6 col-md-3"><div class="stat-pill"><div class="num" style="color:#22c55e" id="sEnrolled">—</div><div class="text-muted small">Enrolled</div></div></div>
+        <div class="col-6 col-md-3"><div class="stat-pill"><div class="num" style="color:#ef4444" id="sRejected">—</div><div class="text-muted small">Rejected</div></div></div>
+      </div>
+
+      <!-- Applications List -->
+      <div id="appsList">
+        <div class="text-center py-5"><div class="spinner-border" style="color:var(--purple)"></div><p class="text-muted mt-3">Loading applications…</p></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="toast-msg" id="toastMsg"></div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<script type="module">
+import { db, auth } from './js/firebase-config.js';
+import { signInWithEmailAndPassword, signOut, onAuthStateChanged, GoogleAuthProvider, signInWithPopup } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js';
+import { collection, getDocs, updateDoc, deleteDoc, doc } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js';
+
+const ALLOWED = 'vjysupermacy@gmail.com';
+let allApps = [];
+
+onAuthStateChanged(auth, user => {
+  if (user && user.email === ALLOWED) {
+    document.getElementById('authGate').style.display = 'none';
+    document.getElementById('appContent').style.display = 'block';
+    loadApps();
+  } else if (user) {
+    signOut(auth);
+    showErr('Access denied.');
+    document.getElementById('authGate').style.display = 'block';
+  } else {
+    document.getElementById('authGate').style.display = 'block';
+    document.getElementById('loginScreen').style.display = 'flex';
+  }
+});
+
+function showErr(msg) { const el=document.getElementById('loginError'); el.style.display='block'; el.textContent=msg; }
+
+window.doGoogleLogin = async () => {
+  try { await signInWithPopup(auth, new GoogleAuthProvider()); }
+  catch(e) { showErr('Google sign-in failed.'); }
+};
+window.doLogin = async () => {
+  try { await signInWithEmailAndPassword(auth, document.getElementById('loginEmail').value, document.getElementById('loginPassword').value); }
+  catch(e) { showErr('Invalid credentials.'); }
+};
+window.doLogout = () => signOut(auth).then(() => location.href='admin.html');
+
+async function loadApps() {
+  try {
+    const snap = await getDocs(collection(db, 'course_applications'));
+    allApps = snap.docs.map(d => ({ id: d.id, ...d.data() }))
+      .sort((a, b) => (b.createdAt?.seconds||0) - (a.createdAt?.seconds||0));
+    updateStats();
+    renderApps(allApps);
+  } catch(e) {
+    document.getElementById('appsList').innerHTML = `<div class="empty-state"><div class="empty-icon">⚠️</div><h5>Error loading: ${e.message}</h5></div>`;
+  }
+}
+
+function updateStats() {
+  document.getElementById('sAll').textContent = allApps.length;
+  document.getElementById('sNew').textContent = allApps.filter(a=>a.status==='new'||!a.status).length;
+  document.getElementById('sEnrolled').textContent = allApps.filter(a=>a.status==='enrolled').length;
+  document.getElementById('sRejected').textContent = allApps.filter(a=>a.status==='rejected').length;
+}
+
+window.filterApps = () => {
+  const s = document.getElementById('searchInput').value.toLowerCase();
+  const st = document.getElementById('statusFilter').value;
+  const filtered = allApps.filter(a => {
+    const matchSearch = !s || a.name?.toLowerCase().includes(s) || a.email?.toLowerCase().includes(s) || a.phone?.includes(s) || a.college?.toLowerCase().includes(s);
+    const matchStatus = st === 'all' || (a.status||'new') === st;
+    return matchSearch && matchStatus;
+  });
+  renderApps(filtered);
+};
+
+function renderApps(apps) {
+  if (!apps.length) {
+    document.getElementById('appsList').innerHTML = `
+      <div class="empty-state">
+        <div class="empty-icon">📋</div>
+        <h5 style="font-weight:700">No applications found</h5>
+        <p class="text-muted">Try changing filters or wait for new submissions</p>
+      </div>`;
+    return;
+  }
+  document.getElementById('appsList').innerHTML = apps.map(a => {
+    const status = a.status || 'new';
+    const date = a.createdAt?.toDate ? a.createdAt.toDate().toLocaleDateString('en-IN',{day:'numeric',month:'short',year:'numeric'}) : '—';
+    return `
+    <div class="app-card status-${status}">
+      <div class="d-flex justify-content-between align-items-start flex-wrap gap-3">
+        <div>
+          <div class="d-flex align-items-center gap-2 flex-wrap">
+            <h5 style="font-weight:800;margin:0">${a.name||'—'}</h5>
+            <span class="status-badge-${status}">${status.charAt(0).toUpperCase()+status.slice(1)}</span>
+          </div>
+          <div class="text-muted small mt-1"><i class="fas fa-calendar me-1"></i>${date} &nbsp;·&nbsp; <i class="fas fa-graduation-cap me-1"></i>${a.courseName||a.course||'—'}</div>
+        </div>
+        <div class="d-flex gap-2 align-items-center flex-wrap">
+          <select class="input-admin" style="width:140px;padding:7px 12px;font-size:13px" onchange="changeStatus('${a.id}',this.value)">
+            <option ${status==='new'?'selected':''} value="new">New</option>
+            <option ${status==='contacted'?'selected':''} value="contacted">Contacted</option>
+            <option ${status==='enrolled'?'selected':''} value="enrolled">Enrolled</option>
+            <option ${status==='rejected'?'selected':''} value="rejected">Rejected</option>
+          </select>
+          <a href="mailto:${a.email}?subject=Regarding your Devverse Course Application" class="btn-purple" style="font-size:12px;padding:7px 14px;text-decoration:none" title="Reply via Email">
+            <i class="fas fa-envelope me-1"></i>Reply
+          </a>
+          <a href="https://wa.me/${(a.phone||'').replace(/\D/g,'')}" target="_blank" class="btn-outline-purple" style="font-size:12px;padding:7px 14px;text-decoration:none" title="WhatsApp">
+            <i class="fab fa-whatsapp me-1"></i>WhatsApp
+          </a>
+          <button onclick="deleteApp('${a.id}')" style="background:var(--danger-bg,#fee2e2);color:#991b1b;border:none;border-radius:8px;padding:7px 12px;cursor:pointer;font-size:13px" title="Delete">
+            <i class="fas fa-trash"></i>
+          </button>
+        </div>
+      </div>
+      <div class="info-grid">
+        <div class="info-block"><label>Email</label><a href="mailto:${a.email}">${a.email||'—'}</a></div>
+        <div class="info-block"><label>Phone</label><a href="tel:${a.phone}">${a.phone||'—'}</a></div>
+        <div class="info-block"><label>College</label><span>${a.college||'—'}</span></div>
+        <div class="info-block"><label>Course</label><span>${a.courseName||a.course||'—'}</span></div>
+        <div class="info-block"><label>Plan</label><span>${a.plan||'—'}</span></div>
+      </div>
+      ${a.skills ? `<div class="mt-3 p-3 rounded-3" style="background:var(--purple-pale)"><label style="font-size:11px;font-weight:700;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.06em;display:block;margin-bottom:4px">Notes / Skills</label><p style="font-size:14px;margin:0">${a.skills}</p></div>` : ''}
+    </div>`;
+  }).join('');
+}
+
+window.changeStatus = async (id, status) => {
+  try {
+    await updateDoc(doc(db, 'course_applications', id), { status });
+    const app = allApps.find(a => a.id === id);
+    if (app) app.status = status;
+    updateStats();
+    filterApps();
+    toast('Status updated ✓');
+  } catch(e) { toast('Error: '+e.message, false); }
+};
+
+window.deleteApp = async (id) => {
+  if (!confirm('Delete this application? This cannot be undone.')) return;
+  await deleteDoc(doc(db, 'course_applications', id));
+  allApps = allApps.filter(a => a.id !== id);
+  updateStats();
+  filterApps();
+  toast('Application deleted');
+};
+
+window.exportCSV = () => {
+  const rows = [['Name','Email','Phone','College','Course','Plan','Status','Date','Notes']];
+  allApps.forEach(a => {
+    const date = a.createdAt?.toDate ? a.createdAt.toDate().toLocaleDateString('en-IN') : '';
+    rows.push([a.name||'',a.email||'',a.phone||'',a.college||'',a.courseName||a.course||'',a.plan||'',a.status||'new',date,a.skills||'']);
+  });
+  const csv = rows.map(r => r.map(v => `"${String(v).replace(/"/g,'""')}"`).join(',')).join('\n');
+  const a = document.createElement('a');
+  a.href = 'data:text/csv;charset=utf-8,' + encodeURIComponent(csv);
+  a.download = `course-applications-${new Date().toISOString().split('T')[0]}.csv`;
+  a.click();
+  toast('CSV exported ✓');
+};
+
+function toast(msg, ok=true) {
+  const t = document.getElementById('toastMsg');
+  t.textContent = msg; t.style.background = ok ? 'var(--purple-dark)' : '#991b1b';
+  t.classList.add('show'); setTimeout(() => t.classList.remove('show'), 3000);
+}
+</script>
+</body>
+</html>

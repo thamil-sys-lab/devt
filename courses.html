@@ -1,0 +1,318 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <link rel="canonical" href="https://devverse1.in/courses">
+  <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Courses — Devverse</title>
+  <meta name="description" content="Industry-aligned tech courses with live projects and AICTE certificates.">
+  <link rel="icon" type="image/png" href="assets/favicon.png">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"/>
+  <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+<div id="navbar-placeholder"></div>
+
+<header class="page-header">
+  <div class="container text-center position-relative">
+    <div class="hero-badge" data-aos="fade-up"><i class="fas fa-graduation-cap"></i> Professional Courses</div>
+    <h1 class="fw-800 mb-3" style="font-weight:800" data-aos="fade-up" data-aos-delay="80">Industry-Aligned Programs</h1>
+    <p data-aos="fade-up" data-aos-delay="160" style="opacity:0.7;font-size:15px">Hands-on courses with live projects and AICTE-approved certificates</p>
+    <div class="mt-3 d-flex gap-2 justify-content-center flex-wrap" data-aos="fade-up" data-aos-delay="240">
+      <span class="badge" style="background:rgba(255,255,255,0.15);color:white;padding:7px 14px"><i class="fas fa-certificate me-1"></i>AICTE Approved</span>
+      <span class="badge" style="background:rgba(255,255,255,0.15);color:white;padding:7px 14px"><i class="fas fa-laptop-code me-1"></i>Live Projects</span>
+      <span class="badge" style="background:rgba(255,255,255,0.15);color:white;padding:7px 14px"><i class="fas fa-users me-1"></i>Expert Mentors</span>
+    </div>
+  </div>
+</header>
+
+<!-- Certificate Showcase -->
+<section class="py-5" style="background:var(--purple-pale)">
+  <div class="container">
+    <div class="text-center mb-5" data-aos="fade-up">
+      <div class="section-label"><i class="fas fa-award"></i> Certificates</div>
+      <h2 class="section-title">Professional Certificates</h2>
+      <p class="section-sub">Government-recognised certificates upon successful completion</p>
+    </div>
+    <div class="row g-4 justify-content-center">
+      <div class="col-lg-5 col-md-6" data-aos="fade-up" data-aos-delay="100">
+        <div class="certificate-frame">
+          <img src="assets/course_devverse.png" alt="Course Completion Certificate" class="certificate-img">
+        </div>
+        <p class="text-center mt-3 text-muted small">Course Completion Certificate</p>
+      </div>
+      <div class="col-lg-5 col-md-6" data-aos="fade-up" data-aos-delay="200">
+        <div class="certificate-frame">
+          <img src="assets/Internship.png" alt="Internship Certificate" class="certificate-img">
+        </div>
+        <p class="text-center mt-3 text-muted small">Internship Completion Certificate</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Search + Filter -->
+<section class="py-4" style="border-bottom:1px solid var(--border)">
+  <div class="container">
+    <div class="d-flex gap-3 flex-wrap align-items-center justify-content-between">
+      <div class="search-wrap" style="max-width:320px;flex:1">
+        <i class="fas fa-search"></i>
+        <input type="text" id="courseSearch" placeholder="Search courses…">
+      </div>
+      <div class="d-flex gap-2 flex-wrap" id="filterTabs">
+        <button class="filter-btn active" data-filter="all">All</button>
+        <button class="filter-btn" data-filter="Development">Development</button>
+        <button class="filter-btn" data-filter="Marketing">Marketing</button>
+        <button class="filter-btn" data-filter="Design">Design</button>
+        <button class="filter-btn" data-filter="Data">Data & Analytics</button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Courses Grid -->
+<section class="py-5">
+  <div class="container">
+    <div id="coursesGrid" class="row g-4">
+      <div class="col-12 text-center py-5">
+        <div class="spinner-border" style="color:var(--purple)"></div>
+        <p class="text-muted mt-3">Loading courses…</p>
+      </div>
+    </div>
+    <div id="noResults" class="text-center py-5" style="display:none">
+      <i class="fas fa-search fa-3x mb-3" style="color:var(--border)"></i>
+      <h5 class="text-muted">No courses found</h5>
+    </div>
+  </div>
+</section>
+
+<!-- Why Learn -->
+<section class="py-5" style="background:var(--purple-pale)">
+  <div class="container">
+    <div class="text-center mb-5"><h2 class="section-title">Why Learn with Devverse?</h2></div>
+    <div class="row g-4">
+      <div class="col-lg-3 col-md-6" data-aos="fade-up" data-aos-delay="100">
+        <div class="info-card">
+          <div class="icon-circle"><i class="fas fa-laptop-code"></i></div>
+          <h6 style="font-weight:700">Hands-on Projects</h6>
+          <p class="text-muted small">Build real portfolio-worthy projects</p>
+        </div>
+      </div>
+      <div class="col-lg-3 col-md-6" data-aos="fade-up" data-aos-delay="200">
+        <div class="info-card">
+          <div class="icon-circle"><i class="fas fa-certificate"></i></div>
+          <h6 style="font-weight:700">AICTE Certificate</h6>
+          <p class="text-muted small">Government-recognised credentials</p>
+        </div>
+      </div>
+      <div class="col-lg-3 col-md-6" data-aos="fade-up" data-aos-delay="300">
+        <div class="info-card">
+          <div class="icon-circle"><i class="fas fa-users"></i></div>
+          <h6 style="font-weight:700">Expert Mentors</h6>
+          <p class="text-muted small">Learn from industry practitioners</p>
+        </div>
+      </div>
+      <div class="col-lg-3 col-md-6" data-aos="fade-up" data-aos-delay="400">
+        <div class="info-card">
+          <div class="icon-circle"><i class="fas fa-infinity"></i></div>
+          <h6 style="font-weight:700">Lifetime Access</h6>
+          <p class="text-muted small">Learn at your own pace, always</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="cta-section text-white text-center">
+  <div class="container position-relative">
+    <h2 class="fw-800 mb-3" style="font-weight:800">Ready to Start Learning?</h2>
+    <p class="mb-4" style="opacity:0.7">Enrol today and take the first step toward your tech career</p>
+    <a href="mailto:devversecare@gmail.com" class="btn-white">Contact Us to Enrol</a>
+  </div>
+</section>
+
+<div id="footer-placeholder"></div>
+
+<!-- COURSE APPLICATION MODAL -->
+<div class="app-modal-overlay" id="courseModal">
+  <div class="app-modal">
+    <div class="modal-header-bar">
+      <div>
+        <div class="modal-title">Course Registration</div>
+        <div class="modal-sub" id="modalCourseTitle">Register for your preferred course</div>
+      </div>
+      <button class="modal-close" onclick="closeModal('courseModal')"><i class="fas fa-times"></i></button>
+    </div>
+    <div id="courseFormWrap">
+      <form id="courseAppForm">
+        <input type="hidden" id="courseNameHidden">
+        <div class="row g-3">
+          <div class="col-md-6">
+            <label class="form-label">Full Name <span class="required">*</span></label>
+            <input type="text" class="form-field" id="ca_name" placeholder="Your full name" required>
+          </div>
+          <div class="col-md-6">
+            <label class="form-label">Email Address <span class="required">*</span></label>
+            <input type="email" class="form-field" id="ca_email" placeholder="you@email.com" required>
+          </div>
+          <div class="col-md-6">
+            <label class="form-label">Phone Number <span class="required">*</span></label>
+            <input type="tel" class="form-field" id="ca_phone" placeholder="+91 XXXXX XXXXX" required>
+          </div>
+          <div class="col-md-6">
+            <label class="form-label">College / Institution <span class="required">*</span></label>
+            <input type="text" class="form-field" id="ca_college" placeholder="Your college name" required>
+          </div>
+          <div class="col-12">
+            <label class="form-label">Which Course are you interested in? <span class="required">*</span></label>
+            <input type="text" class="form-field" id="ca_course" placeholder="Course name" required>
+          </div>
+          <div class="col-12">
+            <label class="form-label">Preferred Plan</label>
+            <select class="form-field" id="ca_plan">
+              <option value="">Select a plan</option>
+              <option>Beginner Plan (1 Course + 1 Internship)</option>
+              <option>Starter Plan (4 Courses + 4 Internships)</option>
+              <option>Advanced Plan (8 Courses + 8 Internships)</option>
+              <option>Individual Course Only</option>
+            </select>
+          </div>
+          <div class="col-12">
+            <label class="form-label">Any specific skills or topics you'd like covered?</label>
+            <textarea class="form-field" id="ca_skills" placeholder="Optional — tell us what you'd like to focus on…" style="min-height:80px"></textarea>
+          </div>
+        </div>
+        <button type="submit" class="btn-purple w-100 mt-4" id="courseSubmitBtn">
+          <i class="fas fa-paper-plane me-2"></i>Submit Registration
+        </button>
+      </form>
+    </div>
+    <div class="modal-success" id="courseSuccess">
+      <div class="success-icon">✅</div>
+      <h4 style="font-weight:800">Registration Submitted!</h4>
+      <p class="text-muted">Thank you! We'll contact you within 24 hours to confirm your enrolment.</p>
+      <button class="btn-purple mt-3" onclick="closeModal('courseModal')">Close</button>
+    </div>
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+<script type="module">
+import { injectNav, injectFooter } from './js/shared.js';
+import { db } from './js/firebase-config.js';
+import { collection, getDocs, addDoc, serverTimestamp } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js';
+injectNav('courses'); injectFooter();
+AOS.init({ duration: 700, once: true });
+
+let allCourses = [];
+let activeFilter = 'all';
+
+const FALLBACK = [
+  { title:'Full Stack Development', category:'Development', level:'Beginner', duration:'12 Weeks', price:'', icon:'fas fa-layer-group', color:'linear-gradient(135deg,#7A28CB,#9933FF)', description:'Master React, Node.js, MongoDB and deploy production-grade apps.', highlights:['React & Next.js','Node.js & Express','MongoDB & Firebase','Deployment & CI/CD'] },
+  { title:'Frontend Development', category:'Development', level:'Beginner', duration:'8 Weeks', price:'', icon:'fas fa-desktop', color:'linear-gradient(135deg,#4facfe,#00f2fe)', description:'HTML, CSS, JavaScript, React — build beautiful responsive interfaces.', highlights:['HTML5 & CSS3','JavaScript ES6+','React.js','Responsive Design'] },
+  { title:'Backend Development', category:'Development', level:'Intermediate', duration:'10 Weeks', price:'', icon:'fas fa-server', color:'linear-gradient(135deg,#43e97b,#38f9d7)', description:'Node.js, Express, REST APIs, databases and server-side architecture.', highlights:['Node.js & Express','REST API Design','SQL & NoSQL','Auth & Security'] },
+  { title:'Digital Marketing', category:'Marketing', level:'Beginner', duration:'8 Weeks', price:'', icon:'fas fa-bullhorn', color:'linear-gradient(135deg,#f093fb,#f5576c)', description:'SEO, paid ads, social media strategy and analytics for the modern brand.', highlights:['SEO & SEM','Google & Meta Ads','Social Media Strategy','Analytics'] },
+  { title:'UI/UX Design', category:'Design', level:'Beginner', duration:'10 Weeks', price:'', icon:'fas fa-paint-brush', color:'linear-gradient(135deg,#fccb90,#d57eeb)', description:'Design thinking, Figma, user research and prototype beautiful products.', highlights:['Design Thinking','Figma & Prototyping','User Research','Design Systems'] },
+  { title:'Data Analytics', category:'Data', level:'Intermediate', duration:'10 Weeks', price:'', icon:'fas fa-chart-bar', color:'linear-gradient(135deg,#a18cd1,#fbc2eb)', description:'Python, Pandas, Power BI and SQL for data-driven decision making.', highlights:['Python & Pandas','Power BI & Tableau','SQL Mastery','ML Basics'] },
+];
+
+async function load() {
+  try {
+    const snap = await getDocs(collection(db,'courses'));
+    allCourses = snap.empty ? FALLBACK : snap.docs.map(d=>({id:d.id,...d.data()}));
+  } catch { allCourses = FALLBACK; }
+  render();
+}
+
+function render() {
+  const search = document.getElementById('courseSearch').value.toLowerCase();
+  const filtered = allCourses.filter(c => {
+    const matchFilter = activeFilter==='all' || c.category===activeFilter;
+    const matchSearch = !search || c.title.toLowerCase().includes(search) || (c.description||'').toLowerCase().includes(search);
+    return matchFilter && matchSearch;
+  });
+  const grid = document.getElementById('coursesGrid');
+  const noRes = document.getElementById('noResults');
+  if (!filtered.length) { grid.innerHTML=''; noRes.style.display='block'; return; }
+  noRes.style.display='none';
+  grid.innerHTML = filtered.map((c,i) => `
+    <div class="col-lg-4 col-md-6" data-aos="fade-up" data-aos-delay="${(i%3)*80}">
+      <div class="course-card d-flex flex-column h-100">
+        <div class="course-card-img" style="background:${c.color||'linear-gradient(135deg,#7A28CB,#9933FF)'}">
+          <i class="${c.icon||'fas fa-code'}"></i>
+        </div>
+        <div class="p-4 d-flex flex-column flex-grow-1">
+          <div class="d-flex gap-2 flex-wrap mb-2">
+            <span class="badge bg-success">${c.level||'Beginner'}</span>
+            <span class="badge" style="background:var(--purple-light);color:var(--purple)">${c.duration||'8 Weeks'}</span>
+            <span class="badge bg-secondary">${c.category||''}</span>
+          </div>
+          <h5 style="font-weight:700">${c.title}</h5>
+          <p class="text-muted small flex-grow-1">${c.description||''}</p>
+          ${c.highlights ? `<ul class="list-unstyled small text-muted mb-3">${c.highlights.map(h=>`<li class="mb-1"><i class="fas fa-check-circle me-2" style="color:#22c55e"></i>${h}</li>`).join('')}</ul>` : ''}
+          <div class="d-flex justify-content-between align-items-center mt-auto pt-3" style="border-top:1px solid var(--border)">
+            <span style="font-weight:700;color:var(--purple);font-size:15px">${c.price ? '₹'+c.price : 'Contact Us'}</span>
+            <button class="btn-purple" style="font-size:12px;padding:8px 18px" onclick="openCourseModal('${c.title}')">Enrol Now</button>
+          </div>
+        </div>
+      </div>
+    </div>`).join('');
+}
+
+document.getElementById('courseSearch').addEventListener('input', render);
+document.querySelectorAll('.filter-btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    activeFilter = btn.dataset.filter;
+    render();
+  });
+});
+
+// Course Application Form
+document.getElementById('courseAppForm').addEventListener('submit', async (e) => {
+  e.preventDefault();
+  const btn = document.getElementById('courseSubmitBtn');
+  btn.textContent='Submitting…'; btn.disabled=true;
+  try {
+    await addDoc(collection(db,'course_applications'), {
+      courseName: document.getElementById('ca_course').value,
+      name: document.getElementById('ca_name').value,
+      email: document.getElementById('ca_email').value,
+      phone: document.getElementById('ca_phone').value,
+      college: document.getElementById('ca_college').value,
+      plan: document.getElementById('ca_plan').value,
+      skills: document.getElementById('ca_skills').value,
+      status: 'new',
+      createdAt: serverTimestamp(),
+    });
+    document.getElementById('courseFormWrap').style.display='none';
+    document.getElementById('courseSuccess').style.display='block';
+  } catch(err) {
+    alert('Submission failed. Please WhatsApp us at +91 9150059199');
+    btn.textContent='Submit Registration'; btn.disabled=false;
+  }
+});
+
+window.openCourseModal = (title) => {
+  document.getElementById('ca_course').value = title||'';
+  document.getElementById('modalCourseTitle').textContent = title ? `Registering for: ${title}` : 'Course Registration';
+  document.getElementById('courseFormWrap').style.display='block';
+  document.getElementById('courseSuccess').style.display='none';
+  document.getElementById('courseAppForm').reset();
+  document.getElementById('ca_course').value = title||'';
+  document.getElementById('courseModal').classList.add('active');
+  document.body.style.overflow='hidden';
+};
+window.closeModal = (id) => {
+  document.getElementById(id).classList.remove('active');
+  document.body.style.overflow='';
+};
+document.getElementById('courseModal').addEventListener('click', e => { if(e.target===e.currentTarget) window.closeModal('courseModal'); });
+
+load();
+</script>
+</body>
+</html>

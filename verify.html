@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <link rel="canonical" href="https://devverse1.in/verify">
+  <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Verify Certificate — Devverse</title>
+  <link rel="icon" type="image/png" href="assets/favicon.png">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"/>
+  <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+<div id="navbar-placeholder"></div>
+
+<div class="verify-hero text-white text-center">
+  <div class="container position-relative py-4">
+    <div class="hero-badge" data-aos="fade-up"><i class="fas fa-shield-alt"></i> Certificate Verification</div>
+    <h1 class="fw-800 mb-3" style="font-weight:800" data-aos="fade-up" data-aos-delay="80">Verify Your Certificate</h1>
+    <p data-aos="fade-up" data-aos-delay="160" style="opacity:0.7;font-size:15px">Instantly verify the authenticity of any Devverse certificate</p>
+  </div>
+</div>
+
+<div class="container pb-5">
+  <div class="verify-card" data-aos="fade-up">
+    <div class="text-center mb-4">
+      <img src="assets/logo.png" alt="Devverse" style="height:34px" class="mb-3">
+      <h4 style="font-weight:800">Enter Certificate ID</h4>
+      <p class="text-muted small">Format: DEVSXXXXXXXX (12 characters, starting with DEVS)</p>
+    </div>
+    <form id="verifyForm">
+      <input type="text" id="certId" class="form-field text-center fw-700"
+        placeholder="e.g. DEVS12345678" maxlength="12"
+        style="letter-spacing:0.12em;font-size:16px;text-transform:uppercase">
+      <button type="submit" class="btn-purple w-100 mt-3" id="verifyBtn">
+        <span class="btn-text"><i class="fas fa-search me-2"></i>Verify Certificate</span>
+      </button>
+    </form>
+    <div id="resultContainer" style="display:none"></div>
+  </div>
+
+  <!-- Info Cards -->
+  <div class="row g-4 mt-4">
+    <div class="col-md-4" data-aos="fade-up" data-aos-delay="100">
+      <div class="info-card">
+        <div class="icon-circle"><i class="fas fa-lock"></i></div>
+        <h6 style="font-weight:700">Tamper-Proof</h6>
+        <p class="text-muted small">Every certificate has a unique ID stored securely in our database</p>
+      </div>
+    </div>
+    <div class="col-md-4" data-aos="fade-up" data-aos-delay="200">
+      <div class="info-card">
+        <div class="icon-circle"><i class="fas fa-bolt"></i></div>
+        <h6 style="font-weight:700">Instant Verification</h6>
+        <p class="text-muted small">Real-time results in under a second</p>
+      </div>
+    </div>
+    <div class="col-md-4" data-aos="fade-up" data-aos-delay="300">
+      <div class="info-card">
+        <div class="icon-circle"><i class="fas fa-share-alt"></i></div>
+        <h6 style="font-weight:700">Share Anywhere</h6>
+        <p class="text-muted small">Share your verified certificate on LinkedIn or via link</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div id="footer-placeholder"></div>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+<script type="module">
+import { injectNav, injectFooter } from './js/shared.js';
+import { db } from './js/firebase-config.js';
+import { collection, getDocs, query, where } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js';
+injectNav('verify'); injectFooter();
+AOS.init({ duration: 700, once: true });
+
+const certIdInput = document.getElementById('certId');
+const resultContainer = document.getElementById('resultContainer');
+const verifyBtn = document.getElementById('verifyBtn');
+
+certIdInput.addEventListener('input', () => { certIdInput.value = certIdInput.value.toUpperCase(); });
+
+document.getElementById('verifyForm').addEventListener('submit', async (e) => {
+  e.preventDefault();
+  const certId = certIdInput.value.trim().toUpperCase();
+  resultContainer.style.display = 'none'; resultContainer.innerHTML = '';
+  if (!certId) { showError('Please enter a certificate ID.'); return; }
+  if (!certId.startsWith('DEVS')) { showError('Certificate ID must start with "DEVS".'); return; }
+  if (certId.length !== 12) { showError('Certificate ID must be exactly 12 characters.'); return; }
+  setLoading(true);
+  try {
+    let match = null;
+    try {
+      const q = query(collection(db,'certificates'), where('certificate_id','==',certId));
+      const snap = await getDocs(q);
+      if (!snap.empty) match = snap.docs[0].data();
+    } catch {}
+    if (!match) {
+      const res = await fetch('certificates.json');
+      const certs = await res.json();
+      match = certs.find(c => c.certificate_id === certId);
+    }
+    setLoading(false);
+    match ? showSuccess(match) : showNotFound();
+  } catch { setLoading(false); showError('Unable to verify at this time. Please try again later.'); }
+});
+
+function setLoading(on) {
+  verifyBtn.disabled = on;
+  verifyBtn.querySelector('.btn-text').innerHTML = on
+    ? '<span class="spinner-border spinner-border-sm me-2"></span>Verifying…'
+    : '<i class="fas fa-search me-2"></i>Verify Certificate';
+}
+
+function showSuccess(data) {
+  const now = new Date();
+  resultContainer.innerHTML = `
+    <div class="result-card success">
+      <div class="text-center">
+        <div class="result-icon text-success"><i class="fas fa-check-circle"></i></div>
+        <h4 style="font-weight:800;color:#166534">Certificate Verified!</h4>
+        <p class="text-muted mb-2">This certificate is authentic and issued by Devverse</p>
+        <div class="verify-badge"><i class="fas fa-shield-alt me-1"></i>AICTE Approved Certificate</div>
+      </div>
+      <div class="mt-4">
+        <div class="detail-row"><span class="detail-label"><i class="fas fa-user me-2" style="color:var(--purple)"></i>Name</span><span class="detail-value fw-700">${data.name}</span></div>
+        <div class="detail-row"><span class="detail-label"><i class="fas fa-university me-2" style="color:var(--purple)"></i>Institution</span><span class="detail-value">${data.college}</span></div>
+        <div class="detail-row"><span class="detail-label"><i class="fas fa-envelope me-2" style="color:var(--purple)"></i>Email</span><span class="detail-value">${data.email}</span></div>
+        <div class="detail-row"><span class="detail-label"><i class="fas fa-certificate me-2" style="color:var(--purple)"></i>Certificate ID</span><span class="detail-value" style="font-family:monospace;font-weight:700">${data.certificate_id}</span></div>
+        <div class="detail-row"><span class="detail-label"><i class="fas fa-calendar me-2" style="color:var(--purple)"></i>Verified On</span><span class="detail-value">${now.toLocaleDateString('en-IN',{day:'numeric',month:'long',year:'numeric'})}</span></div>
+      </div>
+      <div class="share-buttons">
+        <button class="share-btn linkedin" onclick="shareLinkedIn('${data.certificate_id}','${data.name}')"><i class="fab fa-linkedin me-1"></i>LinkedIn</button>
+        <button class="share-btn twitter" onclick="shareTwitter('${data.certificate_id}')"><i class="fab fa-twitter me-1"></i>Twitter</button>
+        <button class="share-btn copy" onclick="copyLink('${data.certificate_id}',this)"><i class="fas fa-link me-1"></i>Copy Link</button>
+      </div>
+    </div>`;
+  resultContainer.style.display='block';
+  resultContainer.scrollIntoView({ behavior:'smooth', block:'nearest' });
+}
+
+function showNotFound() {
+  resultContainer.innerHTML = `
+    <div class="result-card error">
+      <div class="text-center">
+        <div class="result-icon text-danger"><i class="fas fa-times-circle"></i></div>
+        <h4 style="font-weight:800;color:#991b1b">Certificate Not Found</h4>
+        <p class="text-muted mb-3">The ID entered does not exist in our database.</p>
+        <div class="alert alert-warning text-start small">
+          <strong><i class="fas fa-exclamation-triangle me-2"></i>Please check:</strong>
+          <ul class="mb-0 mt-1">
+            <li>The certificate ID is correct (format: DEVSXXXXXXXX)</li>
+            <li>No extra spaces or typos</li>
+            <li>New certificates may take 24–48 hours to appear</li>
+          </ul>
+        </div>
+        <a href="mailto:devversecare@gmail.com" class="btn-purple mt-2" style="font-size:13px;padding:9px 20px"><i class="fas fa-envelope me-2"></i>Contact Support</a>
+      </div>
+    </div>`;
+  resultContainer.style.display='block';
+  resultContainer.scrollIntoView({ behavior:'smooth', block:'nearest' });
+}
+
+function showError(msg) {
+  resultContainer.innerHTML = `<div class="result-card error"><div class="text-center"><div class="result-icon text-danger"><i class="fas fa-exclamation-circle"></i></div><h5 style="font-weight:700;color:#991b1b">Error</h5><p class="text-muted">${msg}</p></div></div>`;
+  resultContainer.style.display='block';
+}
+
+// Auto-verify from URL
+const p = new URLSearchParams(location.search).get('cert');
+if (p) { certIdInput.value = p.toUpperCase(); setTimeout(() => document.getElementById('verifyForm').dispatchEvent(new Event('submit')), 500); }
+
+window.shareLinkedIn = (id,name) => window.open(`https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(location.href)}&summary=${encodeURIComponent(`Certificate: ${id} | ${name} | Devverse AICTE Approved`)}`, '_blank');
+window.shareTwitter = (id) => window.open(`https://twitter.com/intent/tweet?text=${encodeURIComponent(`Just verified my Devverse certificate (${id})! 🎓 #Devverse #AICTE`)}&url=${encodeURIComponent(location.href)}`, '_blank');
+window.copyLink = (id, btn) => { navigator.clipboard.writeText(`${location.origin}${location.pathname}?cert=${id}`).then(() => { btn.innerHTML='<i class="fas fa-check me-1"></i>Copied!'; btn.style.background='#166534'; setTimeout(()=>{ btn.innerHTML='<i class="fas fa-link me-1"></i>Copy Link'; btn.style.background=''; },2000); }); };
+</script>
+</body>
+</html>
