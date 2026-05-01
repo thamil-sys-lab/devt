@@ -48,11 +48,11 @@
       <span style="color:rgba(255,255,255,0.5);font-size:11px">Admin Panel</span>
     </div>
     <nav class="p-2 mt-2">
-      <a href="admin.html" class="nav-link active" onclick="showTab('dashboard',this)"><i class="fas fa-tachometer-alt"></i>Dashboard</a>
-      <a href="admin.html" class="nav-link" onclick="showTab('certificates',this)"><i class="fas fa-certificate"></i>Certificates</a>
-      <a href="admin.html" class="nav-link" onclick="showTab('courses',this)"><i class="fas fa-graduation-cap"></i>Courses</a>
-      <a href="admin.html" class="nav-link" onclick="showTab('internships',this)"><i class="fas fa-briefcase"></i>Internships</a>
-      <a href="admin.html" class="nav-link" onclick="showTab('services',this)"><i class="fas fa-code"></i>IT Services</a>
+      <a href="#" class="nav-link active" onclick="showTab('dashboard',this);return false;"><i class="fas fa-tachometer-alt"></i>Dashboard</a>
+      <a href="#" class="nav-link" onclick="showTab('certificates',this);return false;"><i class="fas fa-certificate"></i>Certificates</a>
+      <a href="#" class="nav-link" onclick="showTab('courses',this);return false;"><i class="fas fa-graduation-cap"></i>Courses</a>
+      <a href="#" class="nav-link" onclick="showTab('internships',this);return false;"><i class="fas fa-briefcase"></i>Internships</a>
+      <a href="#" class="nav-link" onclick="showTab('services',this);return false;"><i class="fas fa-code"></i>IT Services</a>
       <hr style="border-color:rgba(255,255,255,0.08);margin:8px">
       <div style="padding:6px 10px;font-size:10px;font-weight:700;color:rgba(255,255,255,0.3);letter-spacing:0.1em;text-transform:uppercase">Applications</div>
       <a href="admin-course-applications.html" class="nav-link"><i class="fas fa-file-alt"></i>Course Applications <span id="caBadge" class="badge bg-danger ms-1" style="display:none"></span></a>
@@ -265,6 +265,10 @@ onAuthStateChanged(auth, user => {
     document.getElementById('loginScreen').style.display = 'none';
     document.getElementById('adminApp').style.display = 'block';
     loadDashboard();
+    loadCerts();
+    loadCourses();
+    loadInterns();
+    loadSvcs();
   } else {
     document.getElementById('loginScreen').style.display = 'flex';
     document.getElementById('adminApp').style.display = 'none';
@@ -308,23 +312,30 @@ function toast(msg, ok=true) {
 
 // ── DASHBOARD ──
 async function loadDashboard() {
-  const [c,co,ca,ia,sr,sv] = await Promise.all([
-    getDocs(collection(db,'certificates')), getDocs(collection(db,'courses')),
-    getDocs(collection(db,'course_applications')), getDocs(collection(db,'internship_applications')),
-    getDocs(collection(db,'service_requests')), getDocs(collection(db,'it_services')),
-  ]);
-  document.getElementById('sCerts').textContent=c.size;
-  document.getElementById('sCourses').textContent=co.size;
-  document.getElementById('sCourseApps').textContent=ca.size;
-  document.getElementById('sInternApps').textContent=ia.size;
-  document.getElementById('sRequests').textContent=sr.size;
-  document.getElementById('sServices').textContent=sv.size;
-  const newCA=ca.docs.filter(d=>d.data().status==='new').length;
-  const newIA=ia.docs.filter(d=>d.data().status==='new').length;
-  const openSR=sr.docs.filter(d=>d.data().status==='open').length;
-  if(newCA>0){document.getElementById('caBadge').style.display='inline';document.getElementById('caBadge').textContent=newCA;}
-  if(newIA>0){document.getElementById('iaBadge').style.display='inline';document.getElementById('iaBadge').textContent=newIA;}
-  if(openSR>0){document.getElementById('srBadge').style.display='inline';document.getElementById('srBadge').textContent=openSR;}
+  try {
+    const [c,co,ca,ia,sr,sv] = await Promise.all([
+      getDocs(collection(db,'certificates')),
+      getDocs(collection(db,'courses')),
+      getDocs(collection(db,'course_applications')),
+      getDocs(collection(db,'internship_applications')),
+      getDocs(collection(db,'service_requests')),
+      getDocs(collection(db,'it_services')),
+    ]);
+    document.getElementById('sCerts').textContent=c.size;
+    document.getElementById('sCourses').textContent=co.size;
+    document.getElementById('sCourseApps').textContent=ca.size;
+    document.getElementById('sInternApps').textContent=ia.size;
+    document.getElementById('sRequests').textContent=sr.size;
+    document.getElementById('sServices').textContent=sv.size;
+    const newCA=ca.docs.filter(d=>d.data().status==='new'||!d.data().status).length;
+    const newIA=ia.docs.filter(d=>d.data().status==='new'||!d.data().status).length;
+    const openSR=sr.docs.filter(d=>d.data().status==='open'||!d.data().status).length;
+    if(newCA>0){document.getElementById('caBadge').style.display='inline';document.getElementById('caBadge').textContent=newCA;}
+    if(newIA>0){document.getElementById('iaBadge').style.display='inline';document.getElementById('iaBadge').textContent=newIA;}
+    if(openSR>0){document.getElementById('srBadge').style.display='inline';document.getElementById('srBadge').textContent=openSR;}
+  } catch(e) {
+    console.error('Dashboard load error:', e.message);
+  }
 }
 
 // ── CERTIFICATES ──
@@ -385,11 +396,18 @@ window.saveCourse = async () => {
   try{if(id)await updateDoc(doc(db,'courses',id),data);else{data.createdAt=serverTimestamp();await addDoc(collection(db,'courses'),data);}bootstrap.Modal.getInstance(document.getElementById('courseModal')).hide();toast('Course saved!');loadCourses();}catch(e){toast('Error: '+e.message,false);}
 };
 async function loadCourses(){
+  document.getElementById('coursesBody').innerHTML='<tr><td colspan="7" class="text-center py-4"><div class="spinner-border spinner-border-sm" style="color:var(--purple)"></div> Loading…</td></tr>';
   try{
     const snap=await getDocs(collection(db,'courses'));
+    if(snap.empty){
+      document.getElementById('coursesBody').innerHTML='<tr><td colspan="7" class="text-center text-muted py-4">No courses yet. Click + Add Course to create one.</td></tr>';
+      return;
+    }
     const rows=snap.docs.map(d=>{const c={id:d.id,...d.data()};return`<tr><td style="font-weight:600">${c.title}</td><td>${c.category||'—'}</td><td>${c.level||'—'}</td><td>${c.duration||'—'}</td><td>${c.price?'₹'+c.price:'Contact Us'}</td><td>${c.featured?'<span class="badge bg-success">Yes</span>':'<span class="badge bg-secondary">No</span>'}</td><td><button class="btn btn-sm btn-outline-primary me-1" onclick='window.openCourseModal(${JSON.stringify(c)})'><i class="fas fa-edit"></i></button><button class="btn btn-sm btn-outline-danger" onclick="delDoc('courses','${c.id}','course')"><i class="fas fa-trash"></i></button></td></tr>`;}).join('');
-    document.getElementById('coursesBody').innerHTML=rows||'<tr><td colspan="7" class="text-center text-muted py-4">No courses yet. Click + Add Course to create one.</td></tr>';
-  }catch(e){document.getElementById('coursesBody').innerHTML=`<tr><td colspan="7" class="text-center text-danger py-4">Error: ${e.message}</td></tr>`;}
+    document.getElementById('coursesBody').innerHTML=rows;
+  }catch(e){
+    document.getElementById('coursesBody').innerHTML=`<tr><td colspan="7" class="text-center py-4"><span class="text-danger">Error: ${e.message}</span> <button class="btn btn-sm btn-outline-primary ms-2" onclick="loadCourses()">Retry</button></td></tr>`;
+  }
 }
 
 // ── INTERNSHIPS ──
@@ -414,11 +432,13 @@ window.saveInternship = async () => {
   try{if(id)await updateDoc(doc(db,'internship_programs',id),data);else await addDoc(collection(db,'internship_programs'),data);bootstrap.Modal.getInstance(document.getElementById('internModal')).hide();toast('Internship saved!');loadInterns();}catch(e){toast('Error: '+e.message,false);}
 };
 async function loadInterns(){
+  document.getElementById('internsBody').innerHTML='<tr><td colspan="5" class="text-center py-4"><div class="spinner-border spinner-border-sm" style="color:var(--purple)"></div> Loading…</td></tr>';
   try{
     const snap=await getDocs(collection(db,'internship_programs'));
+    if(snap.empty){ document.getElementById('internsBody').innerHTML='<tr><td colspan="5" class="text-center text-muted py-4">No internships yet. Click + Add Internship to create one.</td></tr>'; return; }
     const rows=snap.docs.map(d=>{const i={id:d.id,...d.data()};return`<tr><td style="font-weight:600">${i.title}</td><td>${i.duration||'—'}</td><td>${i.mode||'—'}</td><td>${i.level||'—'}</td><td><button class="btn btn-sm btn-outline-primary me-1" onclick='window.openInternModal(${JSON.stringify(i)})'><i class="fas fa-edit"></i></button><button class="btn btn-sm btn-outline-danger" onclick="delDoc('internship_programs','${i.id}','internship')"><i class="fas fa-trash"></i></button></td></tr>`;}).join('');
-    document.getElementById('internsBody').innerHTML=rows||'<tr><td colspan="5" class="text-center text-muted py-4">No internships yet. Click + Add Internship to create one.</td></tr>';
-  }catch(e){document.getElementById('internsBody').innerHTML=`<tr><td colspan="5" class="text-center text-danger py-4">Error: ${e.message}</td></tr>`;}
+    document.getElementById('internsBody').innerHTML=rows;
+  }catch(e){ document.getElementById('internsBody').innerHTML=`<tr><td colspan="5" class="text-center py-4"><span class="text-danger">Error: ${e.message}</span> <button class="btn btn-sm btn-outline-primary ms-2" onclick="loadInterns()">Retry</button></td></tr>`; }
 }
 
 // ── IT SERVICES ──
@@ -440,11 +460,13 @@ window.saveSvc = async () => {
   try{if(id)await updateDoc(doc(db,'it_services',id),data);else await addDoc(collection(db,'it_services'),data);bootstrap.Modal.getInstance(document.getElementById('svcModal')).hide();toast('Service saved!');loadSvcs();}catch(e){toast('Error: '+e.message,false);}
 };
 async function loadSvcs(){
+  document.getElementById('svcBody').innerHTML='<tr><td colspan="4" class="text-center py-4"><div class="spinner-border spinner-border-sm" style="color:var(--purple)"></div> Loading…</td></tr>';
   try{
     const snap=await getDocs(collection(db,'it_services'));
+    if(snap.empty){ document.getElementById('svcBody').innerHTML='<tr><td colspan="4" class="text-center text-muted py-4">No services yet. Click + Add Service to create one.</td></tr>'; return; }
     const rows=snap.docs.map(d=>{const s={id:d.id,...d.data()};return`<tr><td style="font-weight:600">${s.title}</td><td>${s.badge||'—'}</td><td>${(s.tags||[]).join(', ')}</td><td><button class="btn btn-sm btn-outline-primary me-1" onclick='window.openSvcModal(${JSON.stringify(s)})'><i class="fas fa-edit"></i></button><button class="btn btn-sm btn-outline-danger" onclick="delDoc('it_services','${s.id}','service')"><i class="fas fa-trash"></i></button></td></tr>`;}).join('');
-    document.getElementById('svcBody').innerHTML=rows||'<tr><td colspan="4" class="text-center text-muted py-4">No services yet. Click + Add Service to create one.</td></tr>';
-  }catch(e){document.getElementById('svcBody').innerHTML=`<tr><td colspan="4" class="text-center text-danger py-4">Error: ${e.message}</td></tr>`;}
+    document.getElementById('svcBody').innerHTML=rows;
+  }catch(e){ document.getElementById('svcBody').innerHTML=`<tr><td colspan="4" class="text-center py-4"><span class="text-danger">Error: ${e.message}</span> <button class="btn btn-sm btn-outline-primary ms-2" onclick="loadSvcs()">Retry</button></td></tr>`; }
 }
 
 // ── APPLICATIONS & REQUESTS ──
