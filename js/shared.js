@@ -28,19 +28,45 @@ export function injectFooter() {
   <footer class="footer-section text-white">
     <div class="container py-5">
       <div class="row g-4">
+
+        <!-- Brand + Value Lines -->
         <div class="col-lg-4 col-md-12">
           <div class="footer-logo mb-3">Devverse</div>
-          <p style="color:rgba(255,255,255,0.55);font-size:14px;line-height:1.8">
-            Leading IT solutions and EdTech company bridging academia and industry through technology education and digital transformation.
+          <p style="color:rgba(255,255,255,0.55);font-size:14px;line-height:1.9;margin-bottom:20px">
+            Bridging academia and industry through technology education, real-world internships, and digital solutions.
           </p>
-          <div class="d-flex gap-2 mt-3 flex-wrap">
-            <span class="badge" style="background:rgba(255,255,255,0.1);color:white;padding:6px 12px;font-size:11px">MSME Registered</span>
-            <span class="badge" style="background:rgba(255,255,255,0.1);color:white;padding:6px 12px;font-size:11px">AICTE Approved</span>
-            <span class="badge" style="background:rgba(255,255,255,0.1);color:white;padding:6px 12px;font-size:11px">NCS Listed</span>
+          <!-- Value Lines -->
+          <div style="display:flex;flex-direction:column;gap:10px">
+            <div style="display:flex;align-items:center;gap:10px">
+              <div style="width:32px;height:32px;border-radius:8px;background:rgba(255,255,255,0.1);display:flex;align-items:center;justify-content:center;flex-shrink:0">
+                <i class="fas fa-graduation-cap" style="font-size:13px;color:rgba(255,255,255,0.7)"></i>
+              </div>
+              <span style="color:rgba(255,255,255,0.65);font-size:13px">Industry-aligned courses with live projects</span>
+            </div>
+            <div style="display:flex;align-items:center;gap:10px">
+              <div style="width:32px;height:32px;border-radius:8px;background:rgba(255,255,255,0.1);display:flex;align-items:center;justify-content:center;flex-shrink:0">
+                <i class="fas fa-certificate" style="font-size:13px;color:rgba(255,255,255,0.7)"></i>
+              </div>
+              <span style="color:rgba(255,255,255,0.65);font-size:13px">AICTE-approved certificates</span>
+            </div>
+            <div style="display:flex;align-items:center;gap:10px">
+              <div style="width:32px;height:32px;border-radius:8px;background:rgba(255,255,255,0.1);display:flex;align-items:center;justify-content:center;flex-shrink:0">
+                <i class="fas fa-code" style="font-size:13px;color:rgba(255,255,255,0.7)"></i>
+              </div>
+              <span style="color:rgba(255,255,255,0.65);font-size:13px">End-to-end IT solutions for businesses</span>
+            </div>
+            <div style="display:flex;align-items:center;gap:10px">
+              <div style="width:32px;height:32px;border-radius:8px;background:rgba(255,255,255,0.1);display:flex;align-items:center;justify-content:center;flex-shrink:0">
+                <i class="fas fa-users" style="font-size:13px;color:rgba(255,255,255,0.7)"></i>
+              </div>
+              <span style="color:rgba(255,255,255,0.65);font-size:13px">500+ students trained across Tamil Nadu</span>
+            </div>
           </div>
         </div>
+
+        <!-- Quick Links -->
         <div class="col-lg-2 col-md-4 col-6">
-          <h6 class="fw-700 mb-3" style="color:rgba(255,255,255,0.4);font-size:11px;letter-spacing:0.1em;text-transform:uppercase;font-weight:700">Quick Links</h6>
+          <h6 style="color:rgba(255,255,255,0.4);font-size:11px;letter-spacing:0.1em;text-transform:uppercase;font-weight:700;margin-bottom:14px">Quick Links</h6>
           <a href="index.html" class="footer-link">Home</a>
           <a href="courses.html" class="footer-link">Courses</a>
           <a href="internships.html" class="footer-link">Internships</a>
@@ -48,28 +74,52 @@ export function injectFooter() {
           <a href="about.html" class="footer-link">About Us</a>
           <a href="verify.html" class="footer-link">Verify Certificate</a>
         </div>
+
+        <!-- Contact — email only, no phone/instagram -->
         <div class="col-lg-3 col-md-4 col-6">
-          <h6 class="fw-700 mb-3" style="color:rgba(255,255,255,0.4);font-size:11px;letter-spacing:0.1em;text-transform:uppercase;font-weight:700">Contact</h6>
-          <p style="color:rgba(255,255,255,0.55);font-size:14px;line-height:2.2;margin:0">
-            <i class="fas fa-envelope me-2" style="color:rgba(255,255,255,0.4)"></i>devversecare@gmail.com<br>
-            <i class="fas fa-globe me-2" style="color:rgba(255,255,255,0.4)"></i>devverse1.in<br>
-            <i class="fab fa-instagram me-2" style="color:rgba(255,255,255,0.4)"></i><a href="https://instagram.com/vjysupermacy" target="_blank" class="footer-link d-inline">@vjysupermacy</a><br>
-            <i class="fab fa-whatsapp me-2" style="color:rgba(255,255,255,0.4)"></i><a href="https://wa.me/919150059199" target="_blank" class="footer-link d-inline">+91 9150059199</a>
-          </p>
+          <h6 style="color:rgba(255,255,255,0.4);font-size:11px;letter-spacing:0.1em;text-transform:uppercase;font-weight:700;margin-bottom:14px">Contact</h6>
+          <div style="display:flex;flex-direction:column;gap:12px">
+            <a href="mailto:devversecare@gmail.com" style="display:flex;align-items:center;gap:10px;color:rgba(255,255,255,0.6);text-decoration:none;font-size:14px;transition:color 0.2s" onmouseover="this.style.color='white'" onmouseout="this.style.color='rgba(255,255,255,0.6)'">
+              <i class="fas fa-envelope" style="color:rgba(255,255,255,0.35);width:16px"></i>
+              devversecare@gmail.com
+            </a>
+            <a href="https://devverse1.in" target="_blank" style="display:flex;align-items:center;gap:10px;color:rgba(255,255,255,0.6);text-decoration:none;font-size:14px;transition:color 0.2s" onmouseover="this.style.color='white'" onmouseout="this.style.color='rgba(255,255,255,0.6)'">
+              <i class="fas fa-globe" style="color:rgba(255,255,255,0.35);width:16px"></i>
+              devverse1.in
+            </a>
+            <a href="https://www.linkedin.com/company/deverse1/" target="_blank" style="display:flex;align-items:center;gap:10px;color:rgba(255,255,255,0.6);text-decoration:none;font-size:14px;transition:color 0.2s" onmouseover="this.style.color='white'" onmouseout="this.style.color='rgba(255,255,255,0.6)'">
+              <i class="fab fa-linkedin" style="color:rgba(255,255,255,0.35);width:16px"></i>
+              LinkedIn
+            </a>
+          </div>
         </div>
+
+        <!-- Legal + Badges -->
         <div class="col-lg-3 col-md-4 col-12">
-          <h6 class="fw-700 mb-3" style="color:rgba(255,255,255,0.4);font-size:11px;letter-spacing:0.1em;text-transform:uppercase;font-weight:700">Legal</h6>
-          <a href="terms.html" class="footer-link">Terms & Conditions</a>
+          <h6 style="color:rgba(255,255,255,0.4);font-size:11px;letter-spacing:0.1em;text-transform:uppercase;font-weight:700;margin-bottom:14px">Legal</h6>
+          <a href="terms.html" class="footer-link">Terms &amp; Conditions</a>
           <a href="privacy.html" class="footer-link">Privacy Policy</a>
-          <div class="mt-4" style="color:rgba(255,255,255,0.35);font-size:12px;line-height:2">
+
+          <div style="margin-top:20px;display:flex;flex-direction:column;gap:8px">
+            <div style="display:flex;gap:8px;flex-wrap:wrap">
+              <span style="background:rgba(255,255,255,0.08);color:rgba(255,255,255,0.6);border:1px solid rgba(255,255,255,0.1);padding:4px 10px;border-radius:6px;font-size:11px;font-weight:600">MSME Registered</span>
+              <span style="background:rgba(255,255,255,0.08);color:rgba(255,255,255,0.6);border:1px solid rgba(255,255,255,0.1);padding:4px 10px;border-radius:6px;font-size:11px;font-weight:600">AICTE Approved</span>
+            </div>
+            <span style="background:rgba(255,255,255,0.08);color:rgba(255,255,255,0.6);border:1px solid rgba(255,255,255,0.1);padding:4px 10px;border-radius:6px;font-size:11px;font-weight:600;display:inline-block">NCS Listed</span>
+          </div>
+
+          <div style="margin-top:16px;color:rgba(255,255,255,0.3);font-size:11px;line-height:2">
             <div>UDYAM-TN-24-0155140</div>
             <div>NCS ID: E20167-1809301565098</div>
           </div>
         </div>
+
       </div>
     </div>
     <div class="footer-bottom text-center py-3">
-      <p class="mb-0" style="color:rgba(255,255,255,0.45);font-size:13px">&copy; 2026 Devverse. All Rights Reserved. | IT Solutions & EdTech Company</p>
+      <p class="mb-0" style="color:rgba(255,255,255,0.4);font-size:13px">
+        &copy; 2026 Devverse. All Rights Reserved. &nbsp;|&nbsp; IT Solutions &amp; EdTech Company
+      </p>
     </div>
   </footer>`;
 }
